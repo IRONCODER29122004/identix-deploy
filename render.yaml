@@ -1,17 +1,17 @@
 services:
   - type: web
-    name: identix
+    name: identix-deploy
     runtime: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    plan: standard
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn app:app -b 0.0.0.0:$PORT -w 2
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: MONGODB_URI
         sync: false
       - key: SECRET_KEY
-        generateValue: true
+        sync: false
       - key: FLASK_ENV
         value: production
     healthCheckPath: /health

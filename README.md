@@ -194,6 +194,12 @@ git push origin main
 ## 📖 Documentation
 
 - **Deployment Guide**: [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Render Setup Summary**:
+   - Build: `pip install --upgrade pip && pip install -r requirements.txt`
+   - Start: `gunicorn app:app -b 0.0.0.0:$PORT -w 2`
+   - Health: `/health`
+   - Env vars: `MONGODB_URI`, `SECRET_KEY`, `FLASK_ENV=production`
+   - Plan: `standard` recommended for PyTorch model
 - **Code Documentation**: Inline docstrings in Python files
 - **API Reference**: See "API Endpoints" section above
 
