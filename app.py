@@ -207,26 +207,35 @@ class BiSeNet(nn.Module):
             return out
 
 # ==================== Load Model ====================
-print("Loading BiSeNet model...")
-model = BiSeNet(n_classes=11).to(device)
+LAZY_LOAD = os.environ.get('LAZY_LOAD', 'true').lower() == 'true'
+DEMO_MODE = os.environ.get('DEMO_MODE', 'false').lower() == 'true'
 
-# Load trained weights - prefer 512x512 fine-tuned model
-model_paths = ['best_model_512.pth', 'best_model.pth']
+model = None
 model_loaded = False
-for model_path in model_paths:
-    if os.path.exists(model_path):
-        try:
-            model.load_state_dict(torch.load(model_path, map_location=device))
-            print(f"✓ Model loaded from {model_path}")
-            model_loaded = True
-            break
-        except Exception as e:
-            print(f"⚠ Failed to load {model_path}: {e}")
 
-if not model_loaded:
-    print(f"⚠ Warning: No model file found. Using untrained model.")
-
-model.eval()
+def _load_model_if_needed():
+    global model, model_loaded
+    if model is not None:
+        return
+    print("Loading BiSeNet model...")
+    model = BiSeNet(n_classes=11).to(device)
+    # Load trained weights - prefer 512x512 fine-tuned model
+    model_paths = ['best_model_512.pth', 'best_model.pth']
+    if DEMO_MODE:
+        # Try a smaller checkpoint first if present in demo mode
+        model_paths = ['best_model_demo.pth'] + model_paths
+    for model_path in model_paths:
+        if os.path.exists(model_path):
+            try:
+                model.load_state_dict(torch.load(model_path, map_location=device))
+                print(f"✓ Model loaded from {model_path}")
+                model_loaded = True
+                break
+            except Exception as e:
+                print(f"⚠ Failed to load {model_path}: {e}")
+    if not model_loaded:
+        print("⚠ Warning: No model file found. Using untrained model.")
+    model.eval()
 
 # Load face detection model (Haar Cascade)
 print("Loading face detection model...")
@@ -571,6 +580,9 @@ def predict_landmarks_mediapipe(image):
     else:
         image_cv = image_np
     
+    # Ensure model is loaded lazily
+    if not model_loaded:
+        _load_model_if_needed()
     # Try MediaPipe first
     if mediapipe_detector is not None:
         try:
@@ -626,6 +638,8 @@ def predict_landmarks_bisenet(image):
             - method_used: 'bisenet'
     """
     original_size = image.size
+    if not model_loaded:
+        _load_model_if_needed()
     
     # STEP 1: Detect face using Haar Cascade
     faces = detect_faces(image)
@@ -683,6 +697,8 @@ def predict_landmarks_bisenet(image):
             face_crop_size = face_crop.size
 
             face_tensor = transform(face_crop).unsqueeze(0).to(device)
+            if not model_loaded:
+                _load_model_if_needed()
             with torch.no_grad():
                 face_output = model(face_tensor)
                 face_prediction = torch.argmax(face_output, dim=1)[0].cpu().numpy()
@@ -832,7 +848,9 @@ def predict_landmarks_bisenet(image):
     else:
         # No face detected - fall back to whole-image segmentation
         print("⚠️ No face detected, processing whole image (not recommended)")
-        img_tensor = transform(image).unsqueeze(0).to(device)
+            img_tensor = transform(image).unsqueeze(0).to(device)
+            if not model_loaded:
+                _load_model_if_needed()
         
         with torch.no_grad():
             output = model(img_tensor)

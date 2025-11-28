@@ -2,9 +2,9 @@ services:
   - type: web
     name: identix-deploy
     runtime: python
-    plan: standard
+    plan: free
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn app:app -b 0.0.0.0:$PORT -w 2
+    startCommand: gunicorn app:app -b 0.0.0.0:$PORT -w 1
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -14,4 +14,8 @@ services:
         sync: false
       - key: FLASK_ENV
         value: production
+      - key: LAZY_LOAD
+        value: true
+      - key: DEMO_MODE
+        value: true
     healthCheckPath: /health

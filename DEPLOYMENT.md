@@ -4,9 +4,14 @@ Example local run (Windows):
 python -m pip install -r requirements.txt
 python -c "import os; os.environ['FLASK_ENV']='production'; os.environ['MONGODB_URI']='your-uri'; os.environ['SECRET_KEY']='your-secret'; from app import app; from waitress import serve; serve(app, host='0.0.0.0', port=5000)"
 ```
+Free tier tips (Render):
+- Use single worker: `gunicorn app:app -b 0.0.0.0:$PORT -w 1`
+- Set env: `LAZY_LOAD=true`, `DEMO_MODE=true`
+- Expect longer cold starts; keep requests light.
+
 Example server run (Linux/Render):
 ```
-gunicorn app:app -b 0.0.0.0:${PORT} -w 2
+gunicorn app:app -b 0.0.0.0:${PORT} -w 1
 ```
 # IDENTIX Deployment Guide
 
