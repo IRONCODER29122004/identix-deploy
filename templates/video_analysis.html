@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Analysis - Real-time Facial Tracking | Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-hover: #7c8eef;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 8px 25px rgba(102, 126, 234, 0.3);
+            --accent-bg: #f8f9ff;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --video-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --primary-hover: #8d9df2;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 4px 15px rgba(0,0,0,0.6);
+            --shadow-hover: 0 8px 25px rgba(124, 142, 239, 0.4);
+            --accent-bg: #1c2128;
+            --success-color: #3fb950;
+            --danger-color: #f85149;
+            --warning-color: #d29922;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8em;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            border-color: var(--primary-color);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            font-size: 2.8em;
+            background: var(--video-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .page-header .subtitle {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+
+        /* Card Styling */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 3px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--accent-bg);
+        }
+
+        .upload-area:hover {
+            border-color: #f5576c;
+            background: var(--card-bg);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .upload-area.dragover {
+            border-color: #f5576c;
+            background: var(--video-gradient);
+            opacity: 0.9;
+        }
+
+        .upload-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 1em;
+            color: var(--text-secondary);
+        }
+
+        #videoInput {
+            display: none;
+        }
+
+        /* Video Settings */
+        .video-settings {
+            background: var(--accent-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .setting-item {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .setting-item input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Button Styling */
+        .btn {
+            background: var(--video-gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 5px solid var(--border-color);
+            border-top: 5px solid #f5576c;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin: 10px 0;
+        }
+
+        .processing-status {
+            background: var(--accent-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1em;
+            color: var(--primary-color);
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            background: var(--video-gradient);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        /* Video Preview */
+        .video-preview {
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .video-preview video {
+            width: 100%;
+            display: block;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--accent-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .stats-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: var(--video-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-banner i {
+            font-size: 1.5em;
+        }
+
+        /* Frame Gallery */
+        .frame-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .frame-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .frame-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .frame-item img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .frame-label {
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .navbar-brand {
+                font-size: 1.2em;
+            }
+
+            .navbar-menu {
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .page-header h1 {
+                font-size: 2em;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .settings-row {
+                flex-direction: column;
+            }
+
+            .frame-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-fingerprint"></i>
+            <span>Identix</span>
+        </a>
+        <div class="navbar-menu">
+            <a href="/" class="nav-btn"><i class="fas fa-home"></i> Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1>🎥 Video Analysis & Frame-by-Frame Tracking</h1>
+            <p class="subtitle">Upload a video to detect facial landmarks across multiple frames with advanced AI processing</p>
+        </header>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Processing Power:</strong> Our system analyzes your video frame-by-frame, detecting and tracking facial landmarks throughout the entire duration. Adjust frame limits for faster processing.
+            </div>
+        </div>
+
+        <!-- Main Upload Card -->
+        <div class="main-card">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">🎥</div>
+                    <div class="upload-text">Drop your video here or click to browse</div>
+                    <div class="upload-subtext">Supported formats: MP4, AVI, MOV, MKV • Max size: 500MB</div>
+                </div>
+                <input type="file" id="videoInput" accept="video/*">
+                
+                <!-- Video Settings -->
+                <div class="video-settings" id="videoSettings" style="display: none;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 20px; text-align: center;">
+                        <i class="fas fa-cog"></i> Processing Settings
+                    </h3>
+                    <div class="settings-row">
+                        <div class="setting-item">
+                            <label for="maxFrames">
+                                <i class="fas fa-film"></i> Max Frames to Process
+                            </label>
+                            <input type="number" id="maxFrames" value="100" min="10" max="500">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
+                                Lower values = faster processing
+                            </small>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <i class="fas fa-info-circle"></i> Estimated Time
+                            </label>
+                            <div style="padding: 12px; background: var(--card-bg); border-radius: 8px; font-weight: 600; color: var(--primary-color);">
+                                ~<span id="estimatedTime">30</span> seconds
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" id="processBtn" style="margin-top: 30px; display: none;">
+                    <i class="fas fa-play"></i> Process Video
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p id="loadingText">🎬 Processing your video...</p>
+                <p class="processing-status" id="processingStatus">Analyzing frames...</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="main-card">
+                <div class="section-header">
+                    <h3>📹 Video Processing Results</h3>
+                </div>
+                
+                <!-- Video Preview -->
+                <div class="video-preview">
+                    <video id="processedVideo" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <h3>📊 Processing Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Frames</div>
+                            <div class="stat-value" id="statTotalFrames">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Processed Frames</div>
+                            <div class="stat-value" id="statProcessedFrames">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Processing Time</div>
+                            <div class="stat-value" id="statProcessingTime">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Video Duration</div>
+                            <div class="stat-value" id="statDuration">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Resolution</div>
+                            <div class="stat-value" id="statResolution">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">FPS</div>
+                            <div class="stat-value" id="statFPS">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Frames -->
+                <div style="margin-top: 40px;">
+                    <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">
+                        🎞️ Sample Analyzed Frames
+                    </h3>
+                    <div class="frame-gallery" id="frameGallery">
+                        <!-- Frames will be inserted here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps Section -->
+            <div class="main-card" style="margin-top: 30px;">
+                <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 25px;">
+                    🚀 What's Next? Try These Features
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="next-step-card" onclick="window.location.href='/facial-landmarks'">
+                        <div class="next-step-icon">📸</div>
+                        <h4>Image Analysis</h4>
+                        <p>Upload single images for quick facial landmark detection and segmentation analysis</p>
+                        <div class="next-step-btn">
+                            Try Image Analysis <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="next-step-card" onclick="window.location.href='/deepfake-detection'">
+                        <div class="next-step-icon">🛡️</div>
+                        <h4>Deepfake Detection</h4>
+                        <p>Analyze videos for AI-generated or manipulated content using neural networks</p>
+                        <div class="next-step-btn">
+                            Try Deepfake Detection <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> Process Another Video
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .next-step-card {
+            background: var(--accent-bg);
+            padding: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .next-step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: #f5576c;
+        }
+
+        .next-step-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .next-step-card h4 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .next-step-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .next-step-btn {
+            background: var(--video-gradient);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .next-step-card:hover .next-step-btn {
+            transform: translateX(5px);
+        }
+    </style>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+        }
+
+        // DOM Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('videoInput');
+        const videoSettings = document.getElementById('videoSettings');
+        const maxFrames = document.getElementById('maxFrames');
+        const estimatedTime = document.getElementById('estimatedTime');
+        const processBtn = document.getElementById('processBtn');
+        const loading = document.getElementById('loading');
+        const processingStatus = document.getElementById('processingStatus');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let selectedFile = null;
+
+        // Upload Area Click
+        uploadArea.addEventListener('click', () => {
+            videoInput.click();
+        });
+
+        // File Selection
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        });
+
+        // Drag and Drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('video/')) {
+                handleFileSelect(file);
+            }
+        });
+
+        // Handle File Selection
+        function handleFileSelect(file) {
+            selectedFile = file;
+            uploadArea.innerHTML = `
+                <div class="upload-icon">✅</div>
+                <div class="upload-text">${file.name}</div>
+                <div class="upload-subtext">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+            `;
+            videoSettings.style.display = 'block';
+            processBtn.style.display = 'block';
+        }
+
+        // Update Estimated Time
+        maxFrames.addEventListener('input', () => {
+            const frames = parseInt(maxFrames.value);
+            const time = Math.ceil(frames * 0.3); // ~0.3 seconds per frame
+            estimatedTime.textContent = time;
+        });
+
+        // Process Button Click
+        processBtn.addEventListener('click', () => {
+            if (selectedFile) {
+                processVideo(selectedFile);
+            }
+        });
+
+        // Process Video
+        async function processVideo(file) {
+            const formData = new FormData();
+            formData.append('video', file);
+            formData.append('max_frames', maxFrames.value);
+
+            // Show loading
+            loading.classList.add('active');
+            errorMessage.classList.remove('active');
+            processBtn.disabled = true;
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch('/predict_video', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check if response is ok
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to process video');
+                }
+
+                // Parse JSON response
+                const data = await response.json();
+
+                // Calculate processing time
+                const processingTime = ((Date.now() - startTime) / 1000).toFixed(2);
+
+                // Hide loading and enable button
+                loading.classList.remove('active');
+                processBtn.disabled = false;
+
+                // Display results
+                displayResults(data, processingTime);
+
+            } catch (error) {
+                console.error('Error processing video:', error);
+                showError('Network error: ' + error.message);
+                loading.classList.remove('active');
+                processBtn.disabled = false;
+            }
+        }
+
+        // Display Results
+        function displayResults(data, processingTime) {
+            console.log('Received data:', data);
+
+            // Set stats
+            document.getElementById('statTotalFrames').textContent = data.total_frames || '--';
+            document.getElementById('statProcessedFrames').textContent = data.processed_frames || '--';
+            document.getElementById('statProcessingTime').textContent = processingTime + 's';
+            document.getElementById('statDuration').textContent = '--';
+            document.getElementById('statResolution').textContent = '--';
+            document.getElementById('statFPS').textContent = '--';
+
+            // Display Main Character Landmarks
+            const frameGallery = document.getElementById('frameGallery');
+            frameGallery.innerHTML = '';
+            
+            if (data.main_character && data.main_character.landmarks) {
+                // Add main character header
+                const mainHeader = document.createElement('div');
+                mainHeader.style.cssText = 'grid-column: 1/-1; padding: 20px; background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); border-radius: 10px; color: white; margin-bottom: 20px;';
+                mainHeader.innerHTML = `
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.5em;">🎬 Main Character Analysis</h3>
+                    <p style="margin: 0; opacity: 0.9;">Screen Time: ${data.main_character.screen_time} frames (${data.main_character.screen_time_percent}%)</p>
+                `;
+                frameGallery.appendChild(mainHeader);
+
+                // Display BEST OVERALL FRAME (if available)
+                if (data.main_character.best_overall) {
+                    const bestOverall = data.main_character.best_overall;
+                    const bestItem = document.createElement('div');
+                    bestItem.style.cssText = 'grid-column: 1/-1; background: linear-gradient(135deg, #10b981 0%, #34d399 100%); border-radius: 10px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.2); margin-bottom: 30px;';
+                    bestItem.innerHTML = `
+                        <div style="padding: 15px; color: white;">
+                            <h3 style="margin: 0 0 10px 0; font-size: 1.3em;">⭐ Best Overall Frame</h3>
+                            <p style="margin: 0; opacity: 0.95;">Frame: ${bestOverall.frame_number} | Quality: ${bestOverall.quality_score.toFixed(1)}%</p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; background: var(--card-bg);">
+                            <div>
+                                <img src="${bestOverall.original}" alt="Original" style="width: 100%; border-radius: 8px;">
+                                <div style="text-align: center; padding: 8px; font-size: 0.9em; color: var(--text-secondary); font-weight: 600;">Original</div>
+                            </div>
+                            <div>
+                                <img src="${bestOverall.prediction}" alt="Segmentation" style="width: 100%; border-radius: 8px;">
+                                <div style="text-align: center; padding: 8px; font-size: 0.9em; color: var(--text-secondary); font-weight: 600;">Segmentation</div>
+                            </div>
+                            <div>
+                                <img src="${bestOverall.overlay}" alt="Overlay" style="width: 100%; border-radius: 8px;">
+                                <div style="text-align: center; padding: 8px; font-size: 0.9em; color: var(--text-secondary); font-weight: 600;">Overlay</div>
+                            </div>
+                        </div>
+                    `;
+                    frameGallery.appendChild(bestItem);
+                }
+
+                // Display each landmark with its best frame
+                const landmarks = data.main_character.landmarks;
+                Object.keys(landmarks).forEach(landmarkId => {
+                    const landmark = landmarks[landmarkId];
+                    const frameItem = document.createElement('div');
+                    frameItem.className = 'frame-item';
+                    frameItem.style.cssText = 'background: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow);';
+                    frameItem.innerHTML = `
+                        <div style="padding: 10px; background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); color: white;">
+                            <strong>${landmark.landmark_name}</strong>
+                            <div style="font-size: 0.85em; opacity: 0.9; margin-top: 5px;">
+                                Frame: ${landmark.frame_number} | Quality: ${landmark.quality_score.toFixed(1)}%
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 10px;">
+                            <div>
+                                <img src="${landmark.original}" alt="Original" style="width: 100%; border-radius: 5px;">
+                                <div style="text-align: center; padding: 5px; font-size: 0.85em; color: var(--text-secondary);">Original</div>
+                            </div>
+                            <div>
+                                <img src="${landmark.overlay}" alt="Overlay" style="width: 100%; border-radius: 5px;">
+                                <div style="text-align: center; padding: 5px; font-size: 0.85em; color: var(--text-secondary);">Landmarks</div>
+                            </div>
+                        </div>
+                    `;
+                    frameGallery.appendChild(frameItem);
+                });
+            }
+
+            // Display Other Faces
+            if (data.other_faces && data.other_faces.length > 0) {
+                const otherHeader = document.createElement('div');
+                otherHeader.style.cssText = 'grid-column: 1/-1; padding: 20px; background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); border-radius: 10px; color: white; margin-top: 30px; margin-bottom: 20px;';
+                otherHeader.innerHTML = `
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.5em;">👥 Other People Detected (${data.other_faces.length})</h3>
+                `;
+                frameGallery.appendChild(otherHeader);
+
+                data.other_faces.forEach((face, index) => {
+                    const faceItem = document.createElement('div');
+                    faceItem.className = 'frame-item';
+                    faceItem.style.cssText = 'background: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow);';
+                    faceItem.innerHTML = `
+                        <div style="padding: 10px; background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); color: white;">
+                            <strong>Person ${index + 1}</strong>
+                            <div style="font-size: 0.85em; opacity: 0.9; margin-top: 5px;">
+                                Screen Time: ${face.screen_time} frames (${face.screen_time_percent}%)
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 10px;">
+                            <div>
+                                <img src="${face.original}" alt="Original" style="width: 100%; border-radius: 5px;">
+                                <div style="text-align: center; padding: 5px; font-size: 0.85em; color: var(--text-secondary);">Original</div>
+                            </div>
+                            <div>
+                                <img src="${face.overlay}" alt="Overlay" style="width: 100%; border-radius: 5px;">
+                                <div style="text-align: center; padding: 5px; font-size: 0.85em; color: var(--text-secondary);">Landmarks</div>
+                            </div>
+                        </div>
+                    `;
+                    frameGallery.appendChild(faceItem);
+                });
+            }
+
+            // Show results
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Show Error
+        function showError(message) {
+            errorMessage.textContent = '❌ ' + message;
+            errorMessage.classList.add('active');
+        }
+
+        // Reset Button
+        resetBtn.addEventListener('click', () => {
+            selectedFile = null;
+            videoInput.value = '';
+            uploadArea.innerHTML = `
+                <div class="upload-icon">🎥</div>
+                <div class="upload-text">Drop your video here or click to browse</div>
+                <div class="upload-subtext">Supported formats: MP4, AVI, MOV, MKV • Max size: 500MB</div>
+            `;
+            videoSettings.style.display = 'none';
+            processBtn.style.display = 'none';
+            resultsSection.classList.remove('active');
+            errorMessage.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Analysis - Facial Landmark Detection | Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-hover: #7c8eef;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 8px 25px rgba(102, 126, 234, 0.3);
+            --accent-bg: #f8f9ff;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --primary-hover: #8d9df2;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 4px 15px rgba(0,0,0,0.6);
+            --shadow-hover: 0 8px 25px rgba(124, 142, 239, 0.4);
+            --accent-bg: #1c2128;
+            --success-color: #3fb950;
+            --danger-color: #f85149;
+            --warning-color: #d29922;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8em;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            border-color: var(--primary-color);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            font-size: 2.8em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .page-header .subtitle {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+
+        /* Card Styling */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 3px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--accent-bg);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--primary-gradient);
+            opacity: 0.9;
+        }
+
+        .upload-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 1em;
+            color: var(--text-secondary);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Button Styling */
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        /* Skeleton Loading Styles */
+        .skeleton-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .skeleton-overlay.active {
+            display: flex;
+        }
+
+        .skeleton-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .skeleton-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .skeleton-title {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-subtitle {
+            color: var(--text-secondary);
+            font-size: 1em;
+        }
+
+        .skeleton-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .skeleton-image {
+            aspect-ratio: 1;
+            background: linear-gradient(90deg, var(--accent-bg) 0%, var(--card-bg) 50%, var(--accent-bg) 100%);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .skeleton-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .skeleton-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .skeleton-color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--accent-bg) 0%, var(--card-bg) 50%, var(--accent-bg) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-text {
+            flex: 1;
+            height: 20px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent-bg) 0%, var(--card-bg) 50%, var(--accent-bg) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-progress {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .skeleton-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--accent-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0%;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .skeleton-progress-text {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .spinner {
+            border: 5px solid var(--border-color);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin: 10px 0;
+        }
+
+        .loading .progress-dots {
+            display: inline-block;
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .result-card img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .result-card img:hover {
+            transform: scale(1.02);
+        }
+
+        .result-card img.zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 10000;
+            max-width: 90vw;
+            max-height: 90vh;
+            cursor: zoom-out;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .image-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: none;
+        }
+
+        .image-overlay.active {
+            display: block;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--accent-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .stats-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-banner i {
+            font-size: 1.5em;
+        }
+
+        /* Face Detail Section */
+        #faceOnlySection {
+            margin-top: 50px;
+        }
+
+        .face-section-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .face-section-header h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .navbar-brand {
+                font-size: 1.2em;
+            }
+
+            .navbar-menu {
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .page-header h1 {
+                font-size: 2em;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-fingerprint"></i>
+            <span>Identix</span>
+        </a>
+        <div class="navbar-menu">
+            <a href="/" class="nav-btn"><i class="fas fa-home"></i> Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1>📸 Image Analysis & Facial Landmark Detection</h1>
+            <p class="subtitle">Upload an image to detect and visualize facial landmarks using advanced BiSeNet technology</p>
+        </header>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>How it works:</strong> Our AI analyzes your image to detect facial features, creates a segmentation mask, and highlights key facial landmarks with precision.
+            </div>
+        </div>
+
+        <!-- Main Upload Card -->
+        <div class="main-card">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Drop your image here or click to browse</div>
+                    <div class="upload-subtext">Supported formats: JPG, PNG, GIF • Max size: 16MB</div>
+                </div>
+                <input type="file" id="fileInput" accept="image/*">
+                <button class="btn" id="uploadBtn" style="margin-top: 30px; display: none;">
+                    <i class="fas fa-magic"></i> Generate Landmarks
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p id="loadingText">🔍 Analyzing your image...</p>
+                <p style="color: var(--text-secondary); font-size: 0.9em;">This may take a few moments</p>
+            </div>
+
+            <!-- Skeleton Loading Overlay -->
+            <div class="skeleton-overlay" id="skeletonLoader">
+                <div class="skeleton-container">
+                    <div class="skeleton-header">
+                        <div class="skeleton-title">🎨 Randomizing Colors</div>
+                        <div class="skeleton-subtitle">Applying new color scheme to landmarks...</div>
+                    </div>
+                    
+                    <div class="skeleton-images">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-image"></div>
+                    </div>
+                    
+                    <div class="skeleton-legend">
+                        <div class="skeleton-legend-item">
+                            <div class="skeleton-color-box"></div>
+                            <div class="skeleton-text"></div>
+                        </div>
+                        <div class="skeleton-legend-item">
+                            <div class="skeleton-color-box"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                        <div class="skeleton-legend-item">
+                            <div class="skeleton-color-box"></div>
+                            <div class="skeleton-text"></div>
+                        </div>
+                        <div class="skeleton-legend-item">
+                            <div class="skeleton-color-box"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skeleton-progress">
+                        <div class="skeleton-progress-bar">
+                            <div class="skeleton-progress-fill"></div>
+                        </div>
+                        <div class="skeleton-progress-text">Processing your request...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="main-card">
+                <div class="section-header">
+                    <h3>📊 Full Image Analysis Results</h3>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>🖼️ Original Image</h3>
+                        <img id="originalImg" alt="Original Image">
+                    </div>
+                    <div class="result-card">
+                        <h3>🎭 Landmark Mask</h3>
+                        <img id="predictionImg" alt="Facial Landmark Prediction">
+                    </div>
+                    <div class="result-card">
+                        <h3>✨ Overlay Visualization</h3>
+                        <img id="overlayImg" alt="Landmark Overlay">
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <h3>📈 Detection Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Processing Time</div>
+                            <div class="stat-value" id="statProcessingTime">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Image Resolution</div>
+                            <div class="stat-value" id="statResolution">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Faces Detected</div>
+                            <div class="stat-value" id="statFacesDetected">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Confidence Score</div>
+                            <div class="stat-value" id="statConfidence">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Landmark Statistics Section -->
+                <div class="stats-section">
+                    <h3>🎯 Landmark Statistics</h3>
+                    <div class="stats-grid" id="landmarkStatsGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Legend Section -->
+                <div class="stats-section">
+                    <h3>🎨 Landmark Color Legend</h3>
+                    <div class="legend-items" id="colorLegend" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" style="width: 30px; height: 30px; border-radius: 5px; background: #000000;"></div>
+                            <span>Background</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="1" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(173, 216, 230);"></div>
+                            <span>Skin</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="2" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(101, 67, 33);"></div>
+                            <span>Left Eyebrow</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="3" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(101, 67, 33);"></div>
+                            <span>Right Eyebrow</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="4" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 255, 255);"></div>
+                            <span>Left Eye</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="5" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 255, 255);"></div>
+                            <span>Right Eye</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="6" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(200, 200, 255);"></div>
+                            <span>Nose</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="7" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 192, 203);"></div>
+                            <span>Upper Lip</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="8" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 182, 193);"></div>
+                            <span>Lower Lip</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="9" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 105, 180);"></div>
+                            <span>Mouth Interior</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="legend-color" data-class="10" style="width: 30px; height: 30px; border-radius: 5px; background: rgb(255, 215, 0);"></div>
+                            <span>Hair</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Randomize Colors Button -->
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="btn" id="randomizeColorsBtn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 12px 30px; font-size: 1em; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+                            <i class="fas fa-palette"></i> Randomize Colors
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Face Detail Section -->
+            <div id="faceOnlySection" style="display: none;">
+                <div class="main-card">
+                    <div class="face-section-header">
+                        <h3>👤 Detailed Face Region Analysis</h3>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h3>👤 Face Crop</h3>
+                            <img id="faceOriginalImg" alt="Cropped Face">
+                        </div>
+                        <div class="result-card">
+                            <h3>🎯 Face Landmarks</h3>
+                            <img id="facePredictionImg" alt="Face Landmark Prediction">
+                        </div>
+                        <div class="result-card">
+                            <h3>🌟 Face Overlay</h3>
+                            <img id="faceOverlayImg" alt="Face Landmark Overlay">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps Section -->
+            <div class="main-card" style="margin-top: 30px;">
+                <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 25px;">
+                    🚀 What's Next? Try These Features
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="next-step-card" onclick="window.location.href='/video-analysis'">
+                        <div class="next-step-icon">🎥</div>
+                        <h4>Video Analysis</h4>
+                        <p>Process videos frame-by-frame to track facial landmarks throughout the entire duration</p>
+                        <div class="next-step-btn">
+                            Try Video Analysis <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="next-step-card" onclick="window.location.href='/deepfake-detection'">
+                        <div class="next-step-icon">🛡️</div>
+                        <h4>Deepfake Detection</h4>
+                        <p>Analyze videos for AI-generated or manipulated content using neural networks</p>
+                        <div class="next-step-btn">
+                            Try Deepfake Detection <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> Analyze Another Image
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .next-step-card {
+            background: var(--accent-bg);
+            padding: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .next-step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+
+        .next-step-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .next-step-card h4 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .next-step-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .next-step-btn {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .next-step-card:hover .next-step-btn {
+            transform: translateX(5px);
+        }
+    </style>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+        }
+
+        // DOM Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+        const resetBtn = document.getElementById('resetBtn');
+        const faceOnlySection = document.getElementById('faceOnlySection');
+        const randomizeColorsBtn = document.getElementById('randomizeColorsBtn');
+
+        let selectedFile = null;
+        let currentMaskData = null;  // Store mask for recoloring
+        let currentOriginalImage = null;  // Store original image
+        let currentColors = null;  // Store current color scheme
+
+        // Upload Area Click
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // File Selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        });
+
+        // Drag and Drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        });
+
+        // Handle File Selection
+        function handleFileSelect(file) {
+            selectedFile = file;
+            uploadArea.innerHTML = `
+                <div class="upload-icon">✅</div>
+                <div class="upload-text">${file.name}</div>
+                <div class="upload-subtext">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+            `;
+            uploadBtn.style.display = 'block';
+        }
+
+        // Upload Button Click
+        uploadBtn.addEventListener('click', () => {
+            if (selectedFile) {
+                processImage(selectedFile);
+            }
+        });
+
+        // Process Image
+        async function processImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Show loading
+            loading.classList.add('active');
+            errorMessage.classList.remove('active');
+            uploadBtn.disabled = true;
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const processingTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                    displayResults(data, processingTime);
+                } else {
+                    showError(data.error || 'An error occurred during processing');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                loading.classList.remove('active');
+                uploadBtn.disabled = false;
+            }
+        }
+
+        // Display Results
+        function displayResults(data, processingTime) {
+            // Store data for recoloring
+            currentOriginalImage = data.original || data.original_image;
+            currentMaskData = data.mask;  // The raw segmentation mask
+
+            // Set images (API already includes data:image prefix)
+            document.getElementById('originalImg').src = data.original || data.original_image;
+            document.getElementById('predictionImg').src = data.prediction;
+            document.getElementById('overlayImg').src = data.overlay;
+
+            // Set stats
+            document.getElementById('statProcessingTime').textContent = processingTime + 's';
+            document.getElementById('statResolution').textContent = data.image_size || 'N/A';
+            document.getElementById('statFacesDetected').textContent = data.face_detected ? '1' : '0';
+            document.getElementById('statConfidence').textContent = '95%';
+
+            // Populate landmark statistics
+            const landmarkStatsGrid = document.getElementById('landmarkStatsGrid');
+            landmarkStatsGrid.innerHTML = '';
+            
+            const landmarkNames = {
+                '1': 'Skin',
+                '2': 'Left Eyebrow',
+                '3': 'Right Eyebrow',
+                '4': 'Left Eye',
+                '5': 'Right Eye',
+                '6': 'Nose',
+                '7': 'Upper Lip',
+                '8': 'Lower Lip',
+                '9': 'Mouth Interior',
+                '10': 'Hair'
+            };
+
+            if (data.landmark_counts && Object.keys(data.landmark_counts).length > 0) {
+                Object.entries(data.landmark_counts).forEach(([label, count]) => {
+                    const statItem = document.createElement('div');
+                    statItem.className = 'stat-item';
+                    const landmarkName = landmarkNames[label] || `Landmark ${label}`;
+                    statItem.innerHTML = `
+                        <div class="stat-label">${landmarkName}</div>
+                        <div class="stat-value" style="font-size: 1.4em;">${count.toLocaleString()} px</div>
+                    `;
+                    landmarkStatsGrid.appendChild(statItem);
+                });
+            } else {
+                const noStats = document.createElement('div');
+                noStats.style.padding = '20px';
+                noStats.style.textAlign = 'center';
+                noStats.style.color = 'var(--text-secondary)';
+                noStats.textContent = 'No landmark data available for this image.';
+                landmarkStatsGrid.appendChild(noStats);
+            }
+
+            // Handle face-only images if available
+            if (data.face_original && data.face_prediction && data.face_overlay) {
+                document.getElementById('faceOriginalImg').src = data.face_original;
+                document.getElementById('facePredictionImg').src = data.face_prediction;
+                document.getElementById('faceOverlayImg').src = data.face_overlay;
+                faceOnlySection.style.display = 'block';
+            } else {
+                faceOnlySection.style.display = 'none';
+            }
+
+            // Show results
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Add click-to-zoom functionality to all result images
+            setTimeout(() => {
+                document.querySelectorAll('.result-card img').forEach(img => {
+                    img.addEventListener('click', function() {
+                        toggleImageZoom(this);
+                    });
+                });
+            }, 100);
+        }
+
+        // Image Zoom Toggle
+        function toggleImageZoom(img) {
+            if (img.classList.contains('zoomed')) {
+                img.classList.remove('zoomed');
+                document.getElementById('imageOverlay').remove();
+            } else {
+                // Create overlay
+                const overlay = document.createElement('div');
+                overlay.id = 'imageOverlay';
+                overlay.className = 'image-overlay active';
+                overlay.addEventListener('click', () => {
+                    img.classList.remove('zoomed');
+                    overlay.remove();
+                });
+                document.body.appendChild(overlay);
+                
+                img.classList.add('zoomed');
+            }
+        }
+
+        // Show Error
+        function showError(message) {
+            errorMessage.textContent = '❌ ' + message;
+            errorMessage.classList.add('active');
+        }
+
+        // Generate random RGB color
+        function randomColor() {
+            const r = Math.floor(Math.random() * 200 + 55);  // Avoid too dark colors
+            const g = Math.floor(Math.random() * 200 + 55);
+            const b = Math.floor(Math.random() * 200 + 55);
+            return [r, g, b];
+        }
+
+        // Randomize colors for all facial features
+        async function randomizeColors() {
+            if (!currentMaskData || !currentOriginalImage) {
+                alert('Please process an image first!');
+                return;
+            }
+
+            const skeletonLoader = document.getElementById('skeletonLoader');
+
+            try {
+                randomizeColorsBtn.disabled = true;
+                skeletonLoader.classList.add('active');
+
+                // Generate random colors for classes 1-10 (keep background black)
+                const newColors = {};
+                for (let i = 1; i <= 10; i++) {
+                    newColors[i] = randomColor();
+                }
+
+                // Send recolor request
+                const response = await fetch('/recolor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mask_data: currentMaskData,
+                        original_image: currentOriginalImage,
+                        colors: newColors
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update images
+                    document.getElementById('predictionImg').src = data.prediction;
+                    document.getElementById('overlayImg').src = data.overlay;
+
+                    // Update legend colors
+                    for (let i = 1; i <= 10; i++) {
+                        const colorSquare = document.querySelector(`.legend-color[data-class="${i}"]`);
+                        if (colorSquare && newColors[i]) {
+                            colorSquare.style.background = `rgb(${newColors[i][0]}, ${newColors[i][1]}, ${newColors[i][2]})`;
+                        }
+                    }
+
+                    currentColors = newColors;
+                } else {
+                    throw new Error(data.error || 'Recoloring failed');
+                }
+            } catch (error) {
+                showError('Error randomizing colors: ' + error.message);
+            } finally {
+                skeletonLoader.classList.remove('active');
+                randomizeColorsBtn.disabled = false;
+            }
+        }
+
+        // Randomize Colors Button
+        randomizeColorsBtn.addEventListener('click', randomizeColors);
+
+        // Reset Button
+        resetBtn.addEventListener('click', () => {
+            selectedFile = null;
+            currentMaskData = null;
+            currentOriginalImage = null;
+            currentColors = null;
+            fileInput.value = '';
+            uploadArea.innerHTML = `
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">Drop your image here or click to browse</div>
+                <div class="upload-subtext">Supported formats: JPG, PNG, GIF • Max size: 16MB</div>
+            `;
+            uploadBtn.style.display = 'none';
+            resultsSection.classList.remove('active');
+            errorMessage.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

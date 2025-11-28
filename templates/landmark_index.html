@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facial Landmark Detection - Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-hover: #7c8eef;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 8px 25px rgba(102, 126, 234, 0.3);
+            --accent-bg: #f8f9ff;
+            --input-bg: #ffffff;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --primary-hover: #8d9df2;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 4px 15px rgba(0,0,0,0.6);
+            --shadow-hover: 0 8px 25px rgba(124, 142, 239, 0.4);
+            --accent-bg: #1c2128;
+            --input-bg: #0d1117;
+            --success-color: #3fb950;
+            --danger-color: #f85149;
+            --warning-color: #d29922;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            padding: 0;
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8em;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-btn:hover {
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-btn:hover::before {
+            left: 0;
+        }
+
+        .nav-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .theme-toggle {
+            background: var(--accent-bg);
+            border: 2px solid var(--border-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            color: var(--text-color);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.15);
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .theme-toggle:active {
+            transform: rotate(180deg) scale(1.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: var(--accent-bg);
+            border-radius: 25px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .main-wrapper {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--primary-gradient);
+            margin: 0 -20px 30px -20px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            background: var(--accent-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .mode-btn:hover::after {
+            width: 80%;
+        }
+
+        .mode-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mode-btn.active::after {
+            width: 0;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: 15px;
+            padding: 60px 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--accent-bg);
+            position: relative;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 15px;
+            z-index: 0;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-hover);
+            transform: scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .upload-area:hover::before {
+            opacity: 0.05;
+        }
+
+        .upload-area > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-hover);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(124, 142, 239, 0.3);
+        }
+
+        .upload-area.dragover::before {
+            opacity: 0.1;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .upload-subtext {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        #fileInput, #videoInput {
+            display: none;
+        }
+
+        .video-mode {
+            display: none;
+        }
+
+        .video-mode.active {
+            display: block;
+        }
+
+        .image-mode.active {
+            display: block;
+        }
+
+        .image-mode {
+            display: none;
+        }
+
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: var(--accent-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .result-card img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .stats-section {
+            background: var(--accent-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .stats-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: block !important;
+        }
+
+        .stats-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            visibility: visible !important;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .video-results {
+            margin-top: 30px;
+        }
+
+        .landmark-result {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .landmark-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .landmark-title {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .landmark-info {
+            text-align: right;
+        }
+
+        .frame-number {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .quality-score {
+            font-size: 1.1em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .landmark-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .landmark-image-container {
+            text-align: center;
+        }
+
+        .landmark-image-container h4 {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 1em;
+        }
+
+        .landmark-image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .processing-status {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-top: 15px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .legend {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .legend h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: block !important;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex !important;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+        }
+
+        .legend-item span {
+            color: var(--text-color);
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover .legend-color {
+            transform: scale(1.15);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            background: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: var(--danger-color);
+            transform: translateY(-3px) rotate(-5deg);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .reset-btn:active {
+            transform: translateY(-1px) rotate(-3deg);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+        }
+
+        .modal-close {
+            background: var(--accent-bg);
+            border: 2px solid transparent;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: white;
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .modal-close:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1em;
+            background: var(--input-bg);
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group input:hover {
+            border-color: var(--primary-color);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 15px;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .link-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .link-btn:hover {
+            color: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .link-btn:hover::after {
+            width: 100%;
+        }
+
+        /* History Styles */
+        .history-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .history-item {
+            background: var(--accent-bg);
+            padding: 20px;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .history-item:hover {
+            transform: translateX(10px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+        }
+
+        .history-thumbnail {
+            width: 120px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .history-info h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .history-item:hover .history-info h4 {
+            color: var(--primary-hover);
+        }
+
+        .history-info p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .icon-btn:hover::before {
+            width: 60px;
+            height: 60px;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .icon-btn:active {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-brand {
+                font-size: 1.2em;
+            }
+
+            .navbar-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .history-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .history-thumbnail {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="window.location.href='/'" style="cursor: pointer;">
+            <i class="fas fa-fingerprint"></i>
+            <span>Identix</span>
+        </div>
+        <div class="navbar-menu" id="navMenu">
+            <button class="nav-btn" onclick="window.location.href='/'" style="margin-right: 10px;">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <!-- Guest View -->
+            <div id="guestMenu">
+                <button class="nav-btn" onclick="openModal('loginModal')">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <button class="nav-btn primary" onclick="openModal('registerModal')">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+            </div>
+            <!-- Authenticated View -->
+            <div id="authMenu" style="display: none;">
+                <button class="nav-btn" onclick="openModal('historyModal')">
+                    <i class="fas fa-history"></i> History
+                </button>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userName">User</span>
+                </div>
+                <button class="nav-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <header>
+                <h1>🎭 Facial Landmark Generation</h1>
+                <p class="subtitle">Upload an image or video to detect and visualize facial landmarks using BiSeNet</p>
+            </header>
+
+        <div class="main-card">
+            <!-- Mode Selector -->
+            <div class="mode-selector">
+                <button class="mode-btn active" id="imageModeBtn" onclick="switchMode('image')">📸 Image Mode</button>
+                <button class="mode-btn" id="videoModeBtn" onclick="switchMode('video')">🎥 Video Mode</button>
+                <button class="mode-btn" id="deepfakeModeBtn" onclick="switchMode('deepfake')">🔍 Deepfake Detection</button>
+            </div>
+
+            <!-- Image Upload Section -->
+            <div class="image-mode active" id="imageMode">
+                <div class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Drop your image here or click to browse</div>
+                        <div class="upload-subtext">Supported formats: JPG, PNG (Max 16MB)</div>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*">
+                    <button class="btn" id="uploadBtn" style="margin-top: 20px; display: none;">
+                        Generate Landmarks
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Upload Section -->
+            <div class="video-mode" id="videoMode">
+                <div class="upload-section">
+                    <div class="upload-area" id="videoUploadArea">
+                        <div class="upload-icon">🎥</div>
+                        <div class="upload-text">Drop your video here or click to browse</div>
+                        <div class="upload-subtext">Supported formats: MP4, AVI, MOV (Max 500MB)</div>
+                    </div>
+                    <input type="file" id="videoInput" accept="video/*">
+                    <div style="margin-top: 20px;">
+                        <label for="maxFrames">Max Frames to Process:</label>
+                        <input type="number" id="maxFrames" value="100" min="10" max="500" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                    </div>
+                    <button class="btn" id="videoUploadBtn" style="margin-top: 20px; display: none;">
+                        Process Video
+                    </button>
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p id="loadingText">Processing... This may take a few moments.</p>
+                <p class="processing-status" id="processingStatus"></p>
+            </div>
+
+            <!-- Image Results Section -->
+            <div class="results-section" id="resultsSection">
+                <h2 style="color: #667eea; margin-bottom: 30px; text-align: center;">Results</h2>
+                
+                <!-- Full Image with Face Mask -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center;">
+                    <h3 style="margin: 0; font-size: 1.3em;">📸 Full Image with Face Segmentation</h3>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Original Image</h3>
+                        <img id="originalImg" alt="Original Image">
+                    </div>
+                    <div class="result-card">
+                        <h3>Landmark Mask</h3>
+                        <img id="predictionImg" alt="Prediction">
+                    </div>
+                    <div class="result-card">
+                        <h3>Overlay</h3>
+                        <img id="overlayImg" alt="Overlay">
+                    </div>
+                </div>
+
+                <!-- Face-Only Results (shown if face detected) -->
+                <div id="faceOnlySection" style="display: none; margin-top: 40px;">
+                    <div style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center;">
+                        <h3 style="margin: 0; font-size: 1.3em;">👤 Face Region Detail</h3>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h3>Face Crop</h3>
+                            <img id="faceOriginalImg" alt="Face">
+                        </div>
+                        <div class="result-card">
+                            <h3>Face Landmarks</h3>
+                            <img id="facePredictionImg" alt="Face Prediction">
+                        </div>
+                        <div class="result-card">
+                            <h3>Face Overlay</h3>
+                            <img id="faceOverlayImg" alt="Face Overlay">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Landmark Statistics</h3>
+                    <div class="stats-grid" id="statsGrid"></div>
+                </div>
+
+                <div class="legend">
+                    <h4>Landmark Color Legend</h4>
+                    <div class="legend-items" id="colorLegend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #000000;"></div>
+                            <span>Background</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="1" style="background: rgb(173, 216, 230);"></div>
+                            <span>Skin</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="2" style="background: rgb(101, 67, 33);"></div>
+                            <span>Left Eyebrow</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="3" style="background: rgb(101, 67, 33);"></div>
+                            <span>Right Eyebrow</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="4" style="background: rgb(255, 255, 255);"></div>
+                            <span>Left Eye</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="5" style="background: rgb(255, 255, 255);"></div>
+                            <span>Right Eye</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="6" style="background: rgb(200, 200, 255);"></div>
+                            <span>Nose</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="7" style="background: rgb(220, 120, 120);"></div>
+                            <span>Upper Lip</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="8" style="background: rgb(180, 80, 80);"></div>
+                            <span>Inner Mouth</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="9" style="background: rgb(220, 120, 120);"></div>
+                            <span>Lower Lip</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" data-class="10" style="background: rgb(70, 50, 30);"></div>
+                            <span>Hair</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" id="randomizeColorsBtn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-palette"></i> Randomize Colors
+                    </button>
+                    <button class="btn reset-btn" id="resetBtn">Upload Another Image</button>
+                </div>
+            </div>
+
+            <!-- Video Results Section -->
+            <div class="results-section" id="videoResultsSection">
+                <h2 style="color: #667eea; margin-bottom: 20px; text-align: center;">Video Processing Results</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 30px;" id="videoStats"></p>
+                
+                <div class="video-results" id="videoResults">
+                    <!-- Dynamically populated with landmark results -->
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn reset-btn" id="resetVideoBtn">Process Another Video</button>
+                </div>
+            </div>
+
+            <!-- Deepfake Detection Mode -->
+            <div class="video-mode" id="deepfakeMode">
+                <div class="upload-section">
+                    <div class="upload-area" id="deepfakeUploadArea">
+                        <div class="upload-icon">🔍</div>
+                        <div class="upload-text">Drop video here to analyze for deepfakes</div>
+                        <div class="upload-subtext">Supported formats: MP4, AVI, MOV (Max 500MB)</div>
+                    </div>
+                    <input type="file" id="deepfakeInput" accept="video/*">
+                    <div style="margin-top: 20px;">
+                        <label for="deepfakeMaxFrames">Frames to Analyze:</label>
+                        <input type="number" id="deepfakeMaxFrames" value="100" min="30" max="300" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                    </div>
+                    <button class="btn" id="deepfakeAnalyzeBtn" style="margin-top: 20px; display: none;">
+                        Analyze Video
+                    </button>
+                </div>
+            </div>
+
+            <!-- Deepfake Results Section -->
+            <div class="results-section" id="deepfakeResultsSection">
+                <h2 style="color: #667eea; margin-bottom: 20px; text-align: center;">Deepfake Detection Results</h2>
+                
+                <div id="deepfakeReport" style="max-width: 800px; margin: 0 auto;">
+                    <!-- Populated with analysis results -->
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn reset-btn" id="resetDeepfakeBtn">Analyze Another Video</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'image';
+        let currentMaskData = null;  // Store mask for recoloring
+        let currentOriginalImage = null;  // Store original image
+        let currentColors = null;  // Store current color scheme
+        
+        // Generate random RGB color
+        function randomColor() {
+            const r = Math.floor(Math.random() * 200 + 55);  // Avoid too dark colors
+            const g = Math.floor(Math.random() * 200 + 55);
+            const b = Math.floor(Math.random() * 200 + 55);
+            return [r, g, b];
+        }
+        
+        // Randomize colors for all facial features
+        async function randomizeColors() {
+            if (!currentMaskData || !currentOriginalImage) {
+                alert('Please process an image first!');
+                return;
+            }
+            
+            const loadingEl = document.getElementById('loading');
+            const randomizeBtn = document.getElementById('randomizeColorsBtn');
+            
+            try {
+                randomizeBtn.disabled = true;
+                loadingEl.style.display = 'block';
+                document.getElementById('loadingText').textContent = 'Applying new colors...';
+                
+                // Generate random colors for classes 1-10 (keep background black)
+                const newColors = {};
+                for (let i = 1; i <= 10; i++) {
+                    newColors[i] = randomColor();
+                }
+                
+                // Send recolor request
+                const response = await fetch('/recolor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mask_data: currentMaskData,
+                        original_image: currentOriginalImage,
+                        colors: newColors
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update images
+                    document.getElementById('predictionImg').src = data.prediction;
+                    document.getElementById('overlayImg').src = data.overlay;
+                    
+                    // Update legend colors
+                    const legendItems = document.querySelectorAll('.legend-color[data-class]');
+                    legendItems.forEach(item => {
+                        const classId = parseInt(item.getAttribute('data-class'));
+                        if (newColors[classId]) {
+                            const [r, g, b] = newColors[classId];
+                            item.style.background = `rgb(${r}, ${g}, ${b})`;
+                        }
+                    });
+                    
+                    currentColors = newColors;
+                } else {
+                    throw new Error(data.error || 'Recoloring failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to randomize colors: ' + error.message);
+            } finally {
+                loadingEl.style.display = 'none';
+                randomizeBtn.disabled = false;
+            }
+        }
+        
+        // Mode switching
+        function switchMode(mode) {
+            currentMode = mode;
+            const imageMode = document.getElementById('imageMode');
+            const videoMode = document.getElementById('videoMode');
+            const deepfakeMode = document.getElementById('deepfakeMode');
+            const imageModeBtn = document.getElementById('imageModeBtn');
+            const videoModeBtn = document.getElementById('videoModeBtn');
+            const deepfakeModeBtn = document.getElementById('deepfakeModeBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const videoResultsSection = document.getElementById('videoResultsSection');
+            const deepfakeResultsSection = document.getElementById('deepfakeResultsSection');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Reset states
+            errorMessage.style.display = 'none';
+            resultsSection.style.display = 'none';
+            videoResultsSection.style.display = 'none';
+            deepfakeResultsSection.style.display = 'none';
+            
+            // Hide all modes
+            imageMode.classList.remove('active');
+            videoMode.classList.remove('active');
+            deepfakeMode.classList.remove('active');
+            imageModeBtn.classList.remove('active');
+            videoModeBtn.classList.remove('active');
+            deepfakeModeBtn.classList.remove('active');
+            
+            // Show selected mode
+            if (mode === 'image') {
+                imageMode.classList.add('active');
+                imageModeBtn.classList.add('active');
+            } else if (mode === 'video') {
+                videoMode.classList.add('active');
+                videoModeBtn.classList.add('active');
+            } else if (mode === 'deepfake') {
+                deepfakeMode.classList.add('active');
+                deepfakeModeBtn.classList.add('active');
+            }
+        }
+
+        // Image mode variables
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const randomizeColorsBtn = document.getElementById('randomizeColorsBtn');
+
+        // Video mode variables
+        const videoUploadArea = document.getElementById('videoUploadArea');
+        const videoInput = document.getElementById('videoInput');
+        const videoUploadBtn = document.getElementById('videoUploadBtn');
+        const resetVideoBtn = document.getElementById('resetVideoBtn');
+        
+        // Deepfake mode variables
+        const deepfakeUploadArea = document.getElementById('deepfakeUploadArea');
+        const deepfakeInput = document.getElementById('deepfakeInput');
+        const deepfakeAnalyzeBtn = document.getElementById('deepfakeAnalyzeBtn');
+        const resetDeepfakeBtn = document.getElementById('resetDeepfakeBtn');
+        
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+        const videoResultsSection = document.getElementById('videoResultsSection');
+        const deepfakeResultsSection = document.getElementById('deepfakeResultsSection');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let selectedFile = null;
+        let selectedVideo = null;
+        let selectedDeepfakeVideo = null;
+
+        // Image Upload area click
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        // Video Upload area click
+        videoUploadArea.addEventListener('click', () => videoInput.click());
+        
+        // Deepfake Upload area click
+        deepfakeUploadArea.addEventListener('click', () => deepfakeInput.click());
+
+        // File selection (image)
+        fileInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                uploadArea.querySelector('.upload-text').textContent = selectedFile.name;
+                uploadBtn.style.display = 'block';
+            }
+        });
+
+        // File selection (video)
+        videoInput.addEventListener('change', (e) => {
+            selectedVideo = e.target.files[0];
+            if (selectedVideo) {
+                videoUploadArea.querySelector('.upload-text').textContent = selectedVideo.name;
+                videoUploadBtn.style.display = 'block';
+            }
+        });
+
+        // File selection (deepfake)
+        deepfakeInput.addEventListener('change', (e) => {
+            selectedDeepfakeVideo = e.target.files[0];
+            if (selectedDeepfakeVideo) {
+                deepfakeUploadArea.querySelector('.upload-text').textContent = selectedDeepfakeVideo.name;
+                deepfakeAnalyzeBtn.style.display = 'block';
+            }
+        });
+
+        // Drag and drop (image)
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            selectedFile = e.dataTransfer.files[0];
+            if (selectedFile) {
+                uploadArea.querySelector('.upload-text').textContent = selectedFile.name;
+                uploadBtn.style.display = 'block';
+            }
+        });
+
+        // Drag and drop (video)
+        videoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            videoUploadArea.classList.add('dragover');
+        });
+
+        videoUploadArea.addEventListener('dragleave', () => {
+            videoUploadArea.classList.remove('dragover');
+        });
+
+        videoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            videoUploadArea.classList.remove('dragover');
+            selectedVideo = e.dataTransfer.files[0];
+            if (selectedVideo) {
+                videoUploadArea.querySelector('.upload-text').textContent = selectedVideo.name;
+                videoUploadBtn.style.display = 'block';
+            }
+        });
+
+        // Upload and predict
+        uploadBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            // Show loading
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+            uploadBtn.disabled = true;
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store data for recoloring
+                    currentOriginalImage = data.original;
+                    currentMaskData = data.mask;  // The raw segmentation mask (grayscale)
+                    
+                    // Display full image results
+                    document.getElementById('originalImg').src = data.original;
+                    document.getElementById('predictionImg').src = data.prediction;
+                    document.getElementById('overlayImg').src = data.overlay;
+
+                    // Display face-only results if face detected
+                    const faceOnlySection = document.getElementById('faceOnlySection');
+                    if (data.face_detected && data.face_original) {
+                        document.getElementById('faceOriginalImg').src = data.face_original;
+                        document.getElementById('facePredictionImg').src = data.face_prediction;
+                        document.getElementById('faceOverlayImg').src = data.face_overlay;
+                        faceOnlySection.style.display = 'block';
+                    } else {
+                        faceOnlySection.style.display = 'none';
+                    }
+
+                    // Display statistics (guard when API doesn't return stats)
+                    const statsGrid = document.getElementById('statsGrid');
+                    statsGrid.innerHTML = '';
+
+                    if (data.landmark_counts && Object.keys(data.landmark_counts).length > 0) {
+                        Object.entries(data.landmark_counts).forEach(([label, count]) => {
+                            const statItem = document.createElement('div');
+                            statItem.className = 'stat-item';
+                            // Use landmark name from data if available, otherwise fall back to "Landmark X"
+                            const landmarkName = data.landmark_names && data.landmark_names[label]
+                                ? data.landmark_names[label]
+                                : `Landmark ${label}`;
+                            statItem.innerHTML = `
+                                <div class="stat-label">${landmarkName}</div>
+                                <div class="stat-value">${count.toLocaleString()}</div>
+                            `;
+                            statsGrid.appendChild(statItem);
+                        });
+                    } else {
+                        // Show friendly no-data message instead of leaving the section blank
+                        const noStats = document.createElement('div');
+                        noStats.className = 'no-stats';
+                        noStats.style.padding = '12px 8px';
+                        noStats.style.color = '#666';
+                        noStats.textContent = 'No landmark statistics available for this image.';
+                        statsGrid.appendChild(noStats);
+                    }
+
+                    // Show results
+                    loading.style.display = 'none';
+                    resultsSection.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Prediction failed');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        });
+
+        // Video upload and process
+        videoUploadBtn.addEventListener('click', async () => {
+            if (!selectedVideo) return;
+
+            // Show loading
+            const loadingText = document.getElementById('loadingText');
+            const processingStatus = document.getElementById('processingStatus');
+            loadingText.textContent = 'Processing video... This may take several minutes.';
+            processingStatus.textContent = 'Extracting and analyzing frames...';
+            loading.style.display = 'block';
+            videoResultsSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+            videoUploadBtn.disabled = true;
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('video', selectedVideo);
+            formData.append('max_frames', document.getElementById('maxFrames').value);
+
+            try {
+                const response = await fetch('/predict_video', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Display video statistics
+                    document.getElementById('videoStats').textContent = 
+                        `Found ${data.total_people} person(s) in video - Processed ${data.processed_frames} frames from ${data.total_frames} total frames`;
+
+                    // Display results
+                    const videoResults = document.getElementById('videoResults');
+                    videoResults.innerHTML = '';
+
+                    // MAIN CHARACTER SECTION
+                    const mainHeader = document.createElement('div');
+                    mainHeader.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;';
+                    mainHeader.innerHTML = `
+                        <h2 style="margin: 0; font-size: 1.8em;">
+                            ⭐ Main Character - Detailed Analysis
+                        </h2>
+                        <p style="margin: 10px 0 0 0; font-size: 1.1em; opacity: 0.9;">
+                            Screen Time: ${data.main_character.screen_time} frames (${data.main_character.screen_time_percent}%)
+                        </p>
+                    `;
+                    videoResults.appendChild(mainHeader);
+
+                    // Main character landmarks
+                    Object.entries(data.main_character.landmarks).forEach(([landmarkId, result]) => {
+                        const landmarkDiv = document.createElement('div');
+                        landmarkDiv.className = 'landmark-result';
+                        landmarkDiv.innerHTML = `
+                            <div class="landmark-header">
+                                <div class="landmark-title">${result.landmark_name}</div>
+                                <div class="landmark-info">
+                                    <div class="frame-number">Best Frame: #${result.frame_number}</div>
+                                    <div class="quality-score">Quality Score: ${result.quality_score.toFixed(1)}%</div>
+                                </div>
+                            </div>
+                            <div class="landmark-images">
+                                <div class="landmark-image-container">
+                                    <h4>Original Face</h4>
+                                    <img src="${result.original}" alt="Original">
+                                </div>
+                                <div class="landmark-image-container">
+                                    <h4>All Landmarks</h4>
+                                    <img src="${result.prediction}" alt="Prediction">
+                                </div>
+                                <div class="landmark-image-container">
+                                    <h4>Highlighted</h4>
+                                    <img src="${result.highlight}" alt="Highlight">
+                                </div>
+                                <div class="landmark-image-container">
+                                    <h4>Overlay</h4>
+                                    <img src="${result.overlay}" alt="Overlay">
+                                </div>
+                            </div>
+                        `;
+                        videoResults.appendChild(landmarkDiv);
+                    });
+
+                    // OTHER FACES SECTION (if any)
+                    if (data.other_faces && data.other_faces.length > 0) {
+                        const otherHeader = document.createElement('div');
+                        otherHeader.style.cssText = 'background: linear-gradient(135deg, #888 0%, #666 100%); color: white; padding: 20px; border-radius: 15px; margin-top: 40px; margin-bottom: 20px;';
+                        otherHeader.innerHTML = `
+                            <h2 style="margin: 0; font-size: 1.6em;">
+                                Other Detected Faces (${data.other_faces.length})
+                            </h2>
+                            <p style="margin: 10px 0 0 0; font-size: 1em; opacity: 0.9;">
+                                Simple landmark visualization only
+                            </p>
+                        `;
+                        videoResults.appendChild(otherHeader);
+
+                        // Create grid for other faces
+                        const otherFacesGrid = document.createElement('div');
+                        otherFacesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;';
+
+                        data.other_faces.forEach((face, idx) => {
+                            const faceCard = document.createElement('div');
+                            faceCard.className = 'result-card';
+                            faceCard.innerHTML = `
+                                <h3>Person ${idx + 2}</h3>
+                                <p style="color: #666; margin: 10px 0;">
+                                    Screen Time: ${face.screen_time} frames (${face.screen_time_percent}%)<br>
+                                    Sample Frame: #${face.frame_number}
+                                </p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                                    <div>
+                                        <h4 style="font-size: 0.9em; margin-bottom: 8px; color: #555;">Original</h4>
+                                        <img src="${face.original}" alt="Face" style="width: 100%; border-radius: 8px;">
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size: 0.9em; margin-bottom: 8px; color: #555;">With Landmarks</h4>
+                                        <img src="${face.overlay}" alt="Landmarks" style="width: 100%; border-radius: 8px;">
+                                    </div>
+                                </div>
+                            `;
+                            otherFacesGrid.appendChild(faceCard);
+                        });
+
+                        videoResults.appendChild(otherFacesGrid);
+                    }
+
+                    // Show results
+                    loading.style.display = 'none';
+                    videoResultsSection.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Video processing failed');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                videoUploadBtn.disabled = false;
+                loadingText.textContent = 'Processing... This may take a few moments.';
+                processingStatus.textContent = '';
+            }
+        });
+
+        // Randomize Colors
+        randomizeColorsBtn.addEventListener('click', randomizeColors);
+
+        // Reset (image)
+        resetBtn.addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            uploadArea.querySelector('.upload-text').textContent = 'Drop your image here or click to browse';
+            uploadBtn.style.display = 'none';
+            resultsSection.style.display = 'none';
+            currentMaskData = null;
+            currentOriginalImage = null;
+            currentColors = null;
+        });
+
+        // Reset (video)
+        resetVideoBtn.addEventListener('click', () => {
+            selectedVideo = null;
+            videoInput.value = '';
+            videoUploadArea.querySelector('.upload-text').textContent = 'Drop your video here or click to browse';
+            videoUploadBtn.style.display = 'none';
+            videoResultsSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+        });
+
+        // ================= Deepfake Drag & Drop Handlers =================
+        deepfakeUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            deepfakeUploadArea.classList.add('dragover');
+        });
+
+        deepfakeUploadArea.addEventListener('dragleave', () => {
+            deepfakeUploadArea.classList.remove('dragover');
+        });
+
+        deepfakeUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            deepfakeUploadArea.classList.remove('dragover');
+            selectedDeepfakeVideo = e.dataTransfer.files[0];
+            if (selectedDeepfakeVideo) {
+                deepfakeUploadArea.querySelector('.upload-text').textContent = selectedDeepfakeVideo.name;
+                deepfakeAnalyzeBtn.style.display = 'block';
+            }
+        });
+
+        // ================= Deepfake Analyze Button =================
+        deepfakeAnalyzeBtn.addEventListener('click', async () => {
+            if (!selectedDeepfakeVideo) return;
+
+            const loadingText = document.getElementById('loadingText');
+            const processingStatus = document.getElementById('processingStatus');
+            loadingText.textContent = 'Analyzing video for deepfakes... This may take several minutes.';
+            processingStatus.textContent = 'Running advanced detection algorithms...';
+            loading.style.display = 'block';
+            deepfakeResultsSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+            deepfakeAnalyzeBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('video', selectedDeepfakeVideo);
+            formData.append('max_frames', document.getElementById('deepfakeMaxFrames').value);
+
+            try {
+                const response = await fetch('/detect_deepfake', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const report = data.report;
+                    const deepfakeReport = document.getElementById('deepfakeReport');
+                    deepfakeReport.innerHTML = '';
+
+                    // Verdict Card
+                    const verdictColor = report.is_authentic === false ? '#ff4444' : 
+                                         report.is_authentic === null ? '#ff9800' : '#4CAF50';
+                    const verdictIcon = report.is_authentic === false ? '⚠️' :
+                                       report.is_authentic === null ? '❓' : '✅';
+
+                    const verdictCard = document.createElement('div');
+                    verdictCard.style.cssText = `background: ${verdictColor}; color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center;`;
+                    verdictCard.innerHTML = `
+                        <h2 style="margin: 0 0 15px 0; font-size: 2.5em;">${verdictIcon} ${report.verdict}</h2>
+                        <p style="margin: 0; font-size: 1.8em; font-weight: bold;">Authenticity Score: ${report.confidence}%</p>
+                        <p style="margin: 15px 0 0 0; font-size: 1.1em; opacity: 0.9;">
+                            Analyzed ${report.video_info.analyzed_frames} frames from ${report.video_info.total_frames} total frames
+                        </p>
+                    `;
+                    deepfakeReport.appendChild(verdictCard);
+
+                    // Warnings Section
+                    if (report.warnings && report.warnings.length > 0) {
+                        const warningsDiv = document.createElement('div');
+                        warningsDiv.style.cssText = 'background: #fff3cd; border-left: 5px solid #ff9800; padding: 20px; border-radius: 10px; margin-bottom: 30px;';
+                        warningsDiv.innerHTML = `
+                            <h3 style="color: #856404; margin: 0 0 15px 0;">⚠️ Detected Issues</h3>
+                            <ul style="margin: 0; padding-left: 25px; color: #856404;">
+                                ${report.warnings.map(w => `<li style="margin-bottom: 8px;">${w}</li>`).join('')}
+                            </ul>
+                        `;
+                        deepfakeReport.appendChild(warningsDiv);
+                    }
+
+                    // Detailed Analysis Cards
+                    const analysisGrid = document.createElement('div');
+                    analysisGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;';
+
+                    const analyses = [
+                        {
+                            title: 'Temporal Consistency',
+                            icon: '🎬',
+                            score: report.details.temporal_consistency.score,
+                            info: `${report.details.temporal_consistency.inconsistencies} irregular movements detected`
+                        },
+                        {
+                            title: 'Boundary Artifacts',
+                            icon: '🔍',
+                            score: report.details.boundary_artifacts.score,
+                            info: `${report.details.boundary_artifacts.avg_percentage.toFixed(1)}% suspicious pixels`
+                        },
+                        {
+                            title: 'Blink Pattern',
+                            icon: '👁️',
+                            score: report.details.blink_analysis.score,
+                            info: `${report.details.blink_analysis.blink_count} blinks detected`
+                        },
+                        {
+                            title: 'Landmark Stability',
+                            icon: '📍',
+                            score: report.details.landmark_stability.score,
+                            info: `Variance: ${report.details.landmark_stability.avg_variance.toFixed(2)}`
+                        }
+                    ];
+
+                    analyses.forEach(analysis => {
+                        const scoreColor = analysis.score >= 70 ? '#4CAF50' : 
+                                          analysis.score >= 50 ? '#ff9800' : '#ff4444';
+                        const card = document.createElement('div');
+                        card.style.cssText = 'background: #f8f9ff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);';
+                        card.innerHTML = `
+                            <div style="font-size: 2.5em; margin-bottom: 10px;">${analysis.icon}</div>
+                            <h4 style="margin: 0 0 10px 0; color: #667eea;">${analysis.title}</h4>
+                            <div style="font-size: 2em; font-weight: bold; color: ${scoreColor}; margin-bottom: 8px;">${analysis.score.toFixed(1)}%</div>
+                            <p style="margin: 0; color: #666; font-size: 0.9em;">${analysis.info}</p>
+                        `;
+                        analysisGrid.appendChild(card);
+                    });
+
+                    deepfakeReport.appendChild(analysisGrid);
+
+                    // Explanation Section
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.style.cssText = 'background: #e8f4f8; padding: 20px; border-radius: 10px; margin-top: 20px;';
+                    explanationDiv.innerHTML = `
+                        <h3 style="color: #0277bd; margin: 0 0 15px 0;">📊 How Detection Works</h3>
+                        <ul style="margin: 0; padding-left: 25px; color: #01579b;">
+                            <li style="margin-bottom: 10px;"><strong>Temporal Consistency:</strong> Checks if facial landmarks move smoothly between frames</li>
+                            <li style="margin-bottom: 10px;"><strong>Boundary Artifacts:</strong> Detects unnatural edges around the face boundary</li>
+                            <li style="margin-bottom: 10px;"><strong>Blink Pattern:</strong> Analyzes if blinking appears natural and regular</li>
+                            <li style="margin-bottom: 10px;"><strong>Landmark Stability:</strong> Measures jitter and instability in facial features</li>
+                        </ul>
+                    `;
+                    deepfakeReport.appendChild(explanationDiv);
+
+                    loading.style.display = 'none';
+                    deepfakeResultsSection.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                deepfakeAnalyzeBtn.disabled = false;
+                loadingText.textContent = 'Processing... This may take a few moments.';
+                processingStatus.textContent = '';
+            }
+        });
+
+        // ================= Deepfake Reset =================
+        resetDeepfakeBtn.addEventListener('click', () => {
+            selectedDeepfakeVideo = null;
+            deepfakeInput.value = '';
+            deepfakeUploadArea.querySelector('.upload-text').textContent = 'Drop video here to analyze for deepfakes';
+            deepfakeAnalyzeBtn.style.display = 'none';
+            deepfakeResultsSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+        });
+
+        // ================= Authentication & Theme System =================
+        
+        // Check authentication status on load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/check-auth');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    document.getElementById('guestMenu').style.display = 'none';
+                    document.getElementById('authMenu').style.display = 'flex';
+                    document.getElementById('userName').textContent = data.name;
+                    document.getElementById('userAvatar').textContent = data.name.charAt(0).toUpperCase();
+                } else {
+                    document.getElementById('guestMenu').style.display = 'flex';
+                    document.getElementById('authMenu').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            if (modalId === 'historyModal') {
+                loadHistory();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            document.querySelector('#themeToggle i').className = 'fas fa-sun';
+        }
+
+        // Register function
+        async function register(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    closeModal('registerModal');
+                    checkAuth();
+                    alert('Registration successful! Welcome!');
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                alert('Registration error: ' + error.message);
+            }
+        }
+
+        // Login function
+        async function loginUser(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    closeModal('loginModal');
+                    checkAuth();
+                    alert('Welcome back, ' + data.name + '!');
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            } catch (error) {
+                alert('Login error: ' + error.message);
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/logout', { method: 'POST' });
+                if (response.ok) {
+                    checkAuth();
+                    alert('Logged out successfully');
+                }
+            } catch (error) {
+                alert('Logout error: ' + error.message);
+            }
+        }
+
+        // Load history
+        async function loadHistory() {
+            const historyGrid = document.getElementById('historyGrid');
+            historyGrid.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+            try {
+                const response = await fetch('/history');
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.history && data.history.length > 0) {
+                        historyGrid.innerHTML = '';
+                        data.history.forEach(item => {
+                            const historyItem = document.createElement('div');
+                            historyItem.className = 'history-item';
+                            const date = new Date(item.uploaded_at || item.timestamp).toLocaleString();
+                            
+                            historyItem.innerHTML = `
+                                <img src="data:image/jpeg;base64,${item.image_data || ''}" 
+                                     class="history-thumbnail" 
+                                     alt="Upload"
+                                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%2290%22><rect fill=%22%23ddd%22 width=%22120%22 height=%2290%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22>Image</text></svg>'">
+                                <div class="history-info">
+                                    <h4>${item.file_type || 'Image'} Upload</h4>
+                                    <p><i class="fas fa-clock"></i> ${date}</p>
+                                    <p><i class="fas fa-database"></i> Size: ${formatBytes(item.size || 0)}</p>
+                                </div>
+                                <div class="history-actions">
+                                    <button class="icon-btn" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            `;
+                            historyGrid.appendChild(historyItem);
+                        });
+                    } else {
+                        historyGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <h3>No History Yet</h3>
+                                <p>Your uploads will appear here</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    historyGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Error Loading History</h3>
+                            <p>${data.error || 'Please try again'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                historyGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Initialize auth on page load
+        checkAuth();
+    </script>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Sign In</h2>
+                <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+            </div>
+            <form onsubmit="loginUser(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter your password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Sign In</button>
+                </div>
+            </form>
+            <button class="link-btn" onclick="closeModal('loginModal'); openModal('registerModal')">
+                Don't have an account? Sign up
+            </button>
+            <div style="margin-top: 20px; padding: 15px; background: var(--accent-bg); border-radius: 10px; font-size: 0.9em;">
+                <strong>Demo Account:</strong><br>
+                Email: demo@example.com<br>
+                Password: demo123
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+                <button class="modal-close" onclick="closeModal('registerModal')">×</button>
+            </div>
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="registerName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="registerEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="registerPassword" required minlength="6" placeholder="Create a password (min 6 characters)">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Create Account</button>
+                </div>
+            </form>
+            <button class="link-btn" onclick="closeModal('registerModal'); openModal('loginModal')">
+                Already have an account? Sign in
+            </button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Upload History</h2>
+                <button class="modal-close" onclick="closeModal('historyModal')">×</button>
+            </div>
+            <div class="history-grid" id="historyGrid">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

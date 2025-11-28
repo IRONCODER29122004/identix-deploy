@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Policy - Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --bg-color: #ffffff;
+            --card-bg: #f8f9ff;
+            --text-color: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: var(--text-color); text-decoration: none; font-weight: 500; }
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header {
+            background: var(--primary-gradient);
+            padding: 80px 40px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 { font-size: 3.5em; margin-bottom: 10px; }
+
+        .legal-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .legal-content h2 {
+            font-size: 2em;
+            margin: 40px 0 20px;
+            color: var(--text-color);
+        }
+
+        .legal-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .legal-content ul {
+            margin: 20px 0 20px 40px;
+            color: var(--text-secondary);
+        }
+
+        .legal-content li {
+            margin-bottom: 10px;
+        }
+
+        .footer { background: var(--card-bg); padding: 40px; text-align: center; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-fingerprint"></i>
+                <span>Identix</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/blog">Blog</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Cookie Policy</h1>
+        <p>Last Updated: January 2025</p>
+    </div>
+
+    <div class="legal-content">
+        <p>This Cookie Policy explains how Identix uses cookies and similar technologies when you visit our website.</p>
+
+        <h2>What Are Cookies?</h2>
+        <p>Cookies are small text files stored on your device that help us provide a better experience.</p>
+
+        <h2>Cookies We Use</h2>
+        
+        <p><strong>Essential Cookies:</strong></p>
+        <ul>
+            <li>Session management (keeping you logged in)</li>
+            <li>Security features</li>
+            <li>Load balancing</li>
+        </ul>
+
+        <p><strong>Preference Cookies:</strong></p>
+        <ul>
+            <li>Theme selection (dark/light mode)</li>
+            <li>Language preferences</li>
+            <li>Display settings</li>
+        </ul>
+
+        <p><strong>Analytics Cookies:</strong></p>
+        <ul>
+            <li>Usage statistics</li>
+            <li>Performance monitoring</li>
+            <li>Error tracking</li>
+        </ul>
+
+        <h2>Managing Cookies</h2>
+        <p>You can control cookies through your browser settings. However, disabling cookies may affect functionality.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about our cookie use? Contact privacy@identix.ai</p>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Identix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+    </script>
+</body>
+</html>

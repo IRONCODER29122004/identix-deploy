@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --bg-color: #ffffff;
+            --card-bg: #f8f9ff;
+            --text-color: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: var(--text-color); text-decoration: none; font-weight: 500; }
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header {
+            background: var(--primary-gradient);
+            padding: 100px 40px 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 { font-size: 4em; margin-bottom: 20px; }
+        .content-section { max-width: 1400px; margin: 0 auto; padding: 80px 40px; }
+
+        .job-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .job-card:hover { transform: translateY(-5px); }
+        .job-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+        .job-title { font-size: 1.8em; color: var(--text-color); margin-bottom: 10px; }
+        .job-meta { color: var(--text-secondary); margin-bottom: 20px; }
+        .apply-btn {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .footer { background: var(--card-bg); padding: 40px; text-align: center; color: var(--text-secondary); }
+
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5em; }
+            .job-header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-fingerprint"></i>
+                <span>Identix</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/blog">Blog</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Join Our Team</h1>
+        <p>Help us shape the future of facial analysis AI. We're looking for talented individuals passionate about AI and computer vision.</p>
+    </div>
+
+    <div class="content-section">
+        <div class="job-card">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">Senior Machine Learning Engineer</h3>
+                    <div class="job-meta">
+                        <i class="fas fa-map-marker-alt"></i> Remote | <i class="fas fa-briefcase"></i> Full-time | <i class="fas fa-dollar-sign"></i> Competitive
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p>We're seeking an experienced ML engineer to help develop and optimize our facial analysis models. You'll work on cutting-edge deep learning architectures and real-time inference systems.</p>
+        </div>
+
+        <div class="job-card">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">Full Stack Developer</h3>
+                    <div class="job-meta">
+                        <i class="fas fa-map-marker-alt"></i> Hybrid | <i class="fas fa-briefcase"></i> Full-time | <i class="fas fa-dollar-sign"></i> Competitive
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p>Join our web development team to build intuitive interfaces for our AI platform. Experience with Flask, React, and modern web technologies required.</p>
+        </div>
+
+        <div class="job-card">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">Computer Vision Researcher</h3>
+                    <div class="job-meta">
+                        <i class="fas fa-map-marker-alt"></i> Remote | <i class="fas fa-briefcase"></i> Full-time | <i class="fas fa-dollar-sign"></i> Competitive
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p>Research and develop novel algorithms for facial analysis. PhD in Computer Vision or related field preferred. Publish papers and contribute to open-source projects.</p>
+        </div>
+
+        <div class="job-card">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">UX/UI Designer</h3>
+                    <div class="job-meta">
+                        <i class="fas fa-map-marker-alt"></i> Remote | <i class="fas fa-briefcase"></i> Full-time | <i class="fas fa-dollar-sign"></i> Competitive
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p>Design beautiful, intuitive interfaces for complex AI systems. Experience with design systems and accessibility standards essential.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Identix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDPR Compliance - Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --bg-color: #ffffff;
+            --card-bg: #f8f9ff;
+            --text-color: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: var(--text-color); text-decoration: none; font-weight: 500; }
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header {
+            background: var(--primary-gradient);
+            padding: 80px 40px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 { font-size: 3.5em; margin-bottom: 10px; }
+
+        .legal-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .legal-content h2 {
+            font-size: 2em;
+            margin: 40px 0 20px;
+            color: var(--text-color);
+        }
+
+        .legal-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .legal-content ul {
+            margin: 20px 0 20px 40px;
+            color: var(--text-secondary);
+        }
+
+        .legal-content li {
+            margin-bottom: 10px;
+        }
+
+        .footer { background: var(--card-bg); padding: 40px; text-align: center; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-fingerprint"></i>
+                <span>Identix</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/blog">Blog</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>GDPR Compliance</h1>
+        <p>Your Rights Under GDPR</p>
+    </div>
+
+    <div class="legal-content">
+        <p>Identix is committed to protecting the privacy rights of users in the European Union under the General Data Protection Regulation (GDPR).</p>
+
+        <h2>Your GDPR Rights</h2>
+        
+        <p><strong>Right to Access:</strong> You can request copies of your personal data.</p>
+        
+        <p><strong>Right to Rectification:</strong> You can request correction of inaccurate or incomplete data.</p>
+        
+        <p><strong>Right to Erasure ("Right to be Forgotten"):</strong> You can request deletion of your personal data.</p>
+        
+        <p><strong>Right to Restriction:</strong> You can request limitation of processing your data.</p>
+        
+        <p><strong>Right to Data Portability:</strong> You can request transfer of your data to another service.</p>
+        
+        <p><strong>Right to Object:</strong> You can object to processing of your data for certain purposes.</p>
+
+        <h2>Legal Basis for Processing</h2>
+        <p>We process your data based on:</p>
+        <ul>
+            <li><strong>Consent:</strong> You have given clear consent</li>
+            <li><strong>Contract:</strong> Processing is necessary for our service</li>
+            <li><strong>Legal Obligation:</strong> Required by law</li>
+            <li><strong>Legitimate Interest:</strong> For service improvement</li>
+        </ul>
+
+        <h2>Data Protection Officer</h2>
+        <p>Contact our Data Protection Officer:</p>
+        <ul>
+            <li>Email: dpo@identix.ai</li>
+            <li>Response time: Within 30 days</li>
+        </ul>
+
+        <h2>Lodge a Complaint</h2>
+        <p>You have the right to lodge a complaint with your local supervisory authority if you believe your data protection rights have been violated.</p>
+
+        <h2>Exercise Your Rights</h2>
+        <p>To exercise any of your GDPR rights, please <a href="/contact">contact us</a> or email privacy@identix.ai.</p>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Identix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+    </script>
+</body>
+</html>
