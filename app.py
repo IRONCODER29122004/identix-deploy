@@ -848,9 +848,9 @@ def predict_landmarks_bisenet(image):
     else:
         # No face detected - fall back to whole-image segmentation
         print("⚠️ No face detected, processing whole image (not recommended)")
-            img_tensor = transform(image).unsqueeze(0).to(device)
-            if not model_loaded:
-                _load_model_if_needed()
+        img_tensor = transform(image).unsqueeze(0).to(device)
+        if not model_loaded:
+            _load_model_if_needed()
         
         with torch.no_grad():
             output = model(img_tensor)
