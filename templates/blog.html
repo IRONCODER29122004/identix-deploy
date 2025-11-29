@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - Identix</title>
+    <link rel="icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -307,6 +309,8 @@
             localStorage.setItem('theme', newTheme);
             const icon = document.querySelector('.theme-toggle i');
             icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            const toggleBtn = document.getElementById('themeToggle');
+            toggleBtn.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -314,6 +318,7 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
             const icon = document.querySelector('.theme-toggle i');
             icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            document.getElementById('themeToggle').setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         });
     </script>
 </body>

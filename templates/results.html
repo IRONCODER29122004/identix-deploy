@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Results - NEON FACE LAB</title>
+  <link rel="icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
+  <link rel="shortcut icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -28,7 +30,7 @@
     </div>
 
     <div style="text-align:center; margin-top:14px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-      <a href="/" class="btn">Back</a>
+      <a href="/" class="btn" aria-label="Go back to home">Back</a>
       <div style="display:flex; gap:8px; align-items:center;">
         <label for="modelPick" style="color:#9ae6b4; margin-right:6px;">Models:</label>
         <select id="modelPick" multiple style="min-width:140px; padding:6px; border-radius:6px; background:rgba(0,0,0,0.4); color:#cbd5e1; border:1px solid rgba(255,255,255,0.04);">
@@ -37,7 +39,7 @@
           <option value="vit">ViT</option>
         </select>
       </div>
-      <button id="runInferenceBtn" class="btn">Run Inference on Crops</button>
+      <button id="runInferenceBtn" class="btn" aria-label="Run inference on selected crops">Run Inference on Crops</button>
       <span id="inferenceSpinner" style="display:none; margin-left:10px;"><span class="spinner"></span></span>
     </div>
 

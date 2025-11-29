@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Identix - AI-Powered Facial Analysis Platform</title>
+    <link rel="icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -1456,16 +1458,16 @@
                 <i class="fas fa-fingerprint"></i>
                 <span>Identix</span>
             </a>
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle mobile navigation menu">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="nav-links" id="navLinks">
                 <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-                <a href="/blog">Blog</a>
+                <a href="/about" aria-label="Navigate to About page">About</a>
+                <a href="/contact" aria-label="Navigate to Contact page">Contact</a>
+                <a href="/blog" aria-label="Navigate to Blog page">Blog</a>
                 <div class="user-menu" id="userMenu">
-                    <button class="btn-signin" id="authButton" onclick="toggleUserMenu()">
+                    <button class="btn-signin" id="authButton" onclick="toggleUserMenu()" aria-label="Open user menu">
                         <i class="fas fa-user"></i> Sign In
                     </button>
                     <div class="user-dropdown" id="userDropdown">
@@ -1489,7 +1491,7 @@
                         </button>
                     </div>
                 </div>
-                <button class="theme-toggle" onclick="toggleTheme()">
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light and dark theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>

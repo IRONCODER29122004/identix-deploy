@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deepfake Detection - AI-Powered Video Authentication | Identix</title>
+    <link rel="icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -570,13 +572,13 @@
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <a href="/" class="navbar-brand">
+        <a href="/" class="navbar-brand" aria-label="Go to home">
             <i class="fas fa-fingerprint"></i>
             <span>Identix</span>
         </a>
         <div class="navbar-menu">
-            <a href="/" class="nav-btn"><i class="fas fa-home"></i> Home</a>
-            <button class="theme-toggle" onclick="toggleTheme()">
+            <a href="/" class="nav-btn" aria-label="Navigate to Home"><i class="fas fa-home"></i> Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" aria-label="Toggle light and dark theme">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
@@ -804,17 +806,18 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
             const icon = document.querySelector('.theme-toggle i');
             icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            const toggleBtn = document.getElementById('themeToggle');
+            toggleBtn.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         }
 
         // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        if (savedTheme === 'dark') {
-            document.querySelector('.theme-toggle i').className = 'fas fa-sun';
-        }
+        const themeIcon = document.querySelector('.theme-toggle i');
+        themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        document.getElementById('themeToggle').setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
 
         // DOM Elements
         const uploadArea = document.getElementById('uploadArea');

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facial Landmark Detection - Identix</title>
+    <link rel="icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/favicon.svg?v=1" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -973,37 +975,37 @@
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="navbar-brand" onclick="window.location.href='/'" style="cursor: pointer;">
+        <div class="navbar-brand" onclick="window.location.href='/'" style="cursor: pointer;" aria-label="Go to home">
             <i class="fas fa-fingerprint"></i>
             <span>Identix</span>
         </div>
         <div class="navbar-menu" id="navMenu">
-            <button class="nav-btn" onclick="window.location.href='/'" style="margin-right: 10px;">
+            <button class="nav-btn" onclick="window.location.href='/'" style="margin-right: 10px;" aria-label="Navigate to Home">
                 <i class="fas fa-home"></i> Home
             </button>
             <!-- Guest View -->
             <div id="guestMenu">
-                <button class="nav-btn" onclick="openModal('loginModal')">
+                <button class="nav-btn" onclick="openModal('loginModal')" aria-label="Open Sign In modal">
                     <i class="fas fa-sign-in-alt"></i> Sign In
                 </button>
-                <button class="nav-btn primary" onclick="openModal('registerModal')">
+                <button class="nav-btn primary" onclick="openModal('registerModal')" aria-label="Open Sign Up modal">
                     <i class="fas fa-user-plus"></i> Sign Up
                 </button>
             </div>
             <!-- Authenticated View -->
             <div id="authMenu" style="display: none;">
-                <button class="nav-btn" onclick="openModal('historyModal')">
+                <button class="nav-btn" onclick="openModal('historyModal')" aria-label="Open processing history">
                     <i class="fas fa-history"></i> History
                 </button>
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">U</div>
                     <span id="userName">User</span>
                 </div>
-                <button class="nav-btn" onclick="logout()">
+                <button class="nav-btn" onclick="logout()" aria-label="Logout">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" aria-label="Toggle light and dark theme">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
@@ -1019,21 +1021,21 @@
         <div class="main-card">
             <!-- Mode Selector -->
             <div class="mode-selector">
-                <button class="mode-btn active" id="imageModeBtn" onclick="switchMode('image')">📸 Image Mode</button>
-                <button class="mode-btn" id="videoModeBtn" onclick="switchMode('video')">🎥 Video Mode</button>
-                <button class="mode-btn" id="deepfakeModeBtn" onclick="switchMode('deepfake')">🔍 Deepfake Detection</button>
+                <button class="mode-btn active" id="imageModeBtn" onclick="switchMode('image')" aria-label="Switch to Image Mode">📸 Image Mode</button>
+                <button class="mode-btn" id="videoModeBtn" onclick="switchMode('video')" aria-label="Switch to Video Mode">🎥 Video Mode</button>
+                <button class="mode-btn" id="deepfakeModeBtn" onclick="switchMode('deepfake')" aria-label="Switch to Deepfake Detection Mode">🔍 Deepfake Detection</button>
             </div>
 
             <!-- Image Upload Section -->
             <div class="image-mode active" id="imageMode">
                 <div class="upload-section">
-                    <div class="upload-area" id="uploadArea">
+                    <div class="upload-area" id="uploadArea" aria-label="Image upload area">
                         <div class="upload-icon">📸</div>
                         <div class="upload-text">Drop your image here or click to browse</div>
                         <div class="upload-subtext">Supported formats: JPG, PNG (Max 16MB)</div>
                     </div>
-                    <input type="file" id="fileInput" accept="image/*">
-                    <button class="btn" id="uploadBtn" style="margin-top: 20px; display: none;">
+                    <input type="file" id="fileInput" accept="image/*" aria-label="Choose image file">
+                    <button class="btn" id="uploadBtn" style="margin-top: 20px; display: none;" aria-label="Generate landmarks">
                         Generate Landmarks
                     </button>
                 </div>
@@ -1042,17 +1044,17 @@
             <!-- Video Upload Section -->
             <div class="video-mode" id="videoMode">
                 <div class="upload-section">
-                    <div class="upload-area" id="videoUploadArea">
+                    <div class="upload-area" id="videoUploadArea" aria-label="Video upload area">
                         <div class="upload-icon">🎥</div>
                         <div class="upload-text">Drop your video here or click to browse</div>
                         <div class="upload-subtext">Supported formats: MP4, AVI, MOV (Max 500MB)</div>
                     </div>
-                    <input type="file" id="videoInput" accept="video/*">
+                    <input type="file" id="videoInput" accept="video/*" aria-label="Choose video file">
                     <div style="margin-top: 20px;">
                         <label for="maxFrames">Max Frames to Process:</label>
-                        <input type="number" id="maxFrames" value="100" min="10" max="500" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                        <input type="number" id="maxFrames" value="100" min="10" max="500" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;" aria-label="Maximum frames to process">
                     </div>
-                    <button class="btn" id="videoUploadBtn" style="margin-top: 20px; display: none;">
+                    <button class="btn" id="videoUploadBtn" style="margin-top: 20px; display: none;" aria-label="Process video">
                         Process Video
                     </button>
                 </div>
@@ -1192,17 +1194,17 @@
             <!-- Deepfake Detection Mode -->
             <div class="video-mode" id="deepfakeMode">
                 <div class="upload-section">
-                    <div class="upload-area" id="deepfakeUploadArea">
+                    <div class="upload-area" id="deepfakeUploadArea" aria-label="Deepfake video upload area">
                         <div class="upload-icon">🔍</div>
                         <div class="upload-text">Drop video here to analyze for deepfakes</div>
                         <div class="upload-subtext">Supported formats: MP4, AVI, MOV (Max 500MB)</div>
                     </div>
-                    <input type="file" id="deepfakeInput" accept="video/*">
+                    <input type="file" id="deepfakeInput" accept="video/*" aria-label="Choose video file for deepfake analysis">
                     <div style="margin-top: 20px;">
                         <label for="deepfakeMaxFrames">Frames to Analyze:</label>
-                        <input type="number" id="deepfakeMaxFrames" value="100" min="30" max="300" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                        <input type="number" id="deepfakeMaxFrames" value="100" min="30" max="300" style="margin-left: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ddd;" aria-label="Frames to analyze">
                     </div>
-                    <button class="btn" id="deepfakeAnalyzeBtn" style="margin-top: 20px; display: none;">
+                    <button class="btn" id="deepfakeAnalyzeBtn" style="margin-top: 20px; display: none;" aria-label="Analyze video for deepfakes">
                         Analyze Video
                     </button>
                 </div>
@@ -1919,17 +1921,19 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
             const icon = document.querySelector('#themeToggle i');
+            // Show sun icon when switching to dark mode (to indicate light is available)
             icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            const toggleBtn = document.getElementById('themeToggle');
+            toggleBtn.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         }
 
         // Load theme preference
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        if (savedTheme === 'dark') {
-            document.querySelector('#themeToggle i').className = 'fas fa-sun';
-        }
+        const themeIcon = document.querySelector('#themeToggle i');
+        themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        document.getElementById('themeToggle').setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
 
         // Register function
         async function register(event) {
