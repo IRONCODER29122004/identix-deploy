@@ -7,7 +7,7 @@ services:
     startCommand: gunicorn app:app -b 0.0.0.0:$PORT -w 1
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.8
       - key: MONGODB_URI
         sync: false
       - key: SECRET_KEY
