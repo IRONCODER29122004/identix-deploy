@@ -218,7 +218,7 @@ def _load_model_if_needed():
     if model is not None:
         return
     print("Loading BiSeNet model...")
-    model = BiSeNet(n_classes=11).to(device)
+    model = BiSeNet(n_classes=11)
     # Load trained weights - prefer 512x512 fine-tuned model
     model_paths = ['best_model_512.pth', 'best_model.pth']
     if DEMO_MODE:
@@ -227,7 +227,9 @@ def _load_model_if_needed():
     for model_path in model_paths:
         if os.path.exists(model_path):
             try:
-                model.load_state_dict(torch.load(model_path, map_location=device))
+                # Load with weights_only=True for security and memory efficiency
+                state_dict = torch.load(model_path, map_location='cpu', weights_only=True)
+                model.load_state_dict(state_dict)
                 print(f"✓ Model loaded from {model_path}")
                 model_loaded = True
                 break
@@ -236,6 +238,8 @@ def _load_model_if_needed():
     if not model_loaded:
         print("⚠ Warning: No model file found. Using untrained model.")
     model.eval()
+    # Move to device after loading to minimize memory spike
+    model = model.to(device)
 
 # Load face detection model (Haar Cascade)
 print("Loading face detection model...")
