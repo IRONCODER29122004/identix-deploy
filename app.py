@@ -952,6 +952,16 @@ def detect_faces(frame):
             flags=cv2.CASCADE_SCALE_IMAGE
         )
     
+    # ULTRA aggressive last resort - catch ANY possible face
+    if len(faces) == 0:
+        faces = face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.03,
+            minNeighbors=1,
+            minSize=(10, 10),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+    
     print(f"[DEBUG] Haar Cascade detected {len(faces)} face(s)")
     
     faces_list = [(int(x), int(y), int(w), int(h)) for (x, y, w, h) in faces]
