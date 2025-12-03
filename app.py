@@ -914,8 +914,8 @@ def is_valid_face_region(frame, bbox):
 
 def detect_faces(frame):
     """
-    Detect faces using Haar Cascade - ULTRA PERMISSIVE
-    No validation - trust Haar Cascade completely
+    Detect faces using Haar Cascade with cascading fallback attempts.
+    Uses multiple detection passes with different parameters for better reliability.
     Returns: List of (x, y, w, h) bounding boxes
     """
     gray = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2GRAY)
@@ -923,18 +923,37 @@ def detect_faces(frame):
     # Apply histogram equalization for better detection
     gray = cv2.equalizeHist(gray)
     
-    # ULTRA RELAXED parameters - maximum detection
+    # First attempt: balanced parameters
     faces = face_cascade.detectMultiScale(
         gray, 
-        scaleFactor=1.2,      # Very permissive (was 1.1)
-        minNeighbors=2,       # Very lenient (was 3)
-        minSize=(30, 30),     # Very small faces OK (was 50x50)
+        scaleFactor=1.1,
+        minNeighbors=4,
+        minSize=(30, 30),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
     
+    # If no faces found, try more lenient settings
+    if len(faces) == 0:
+        faces = face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.05,
+            minNeighbors=3,
+            minSize=(20, 20),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+    
+    # Final fallback: very lenient (may have false positives but better than missing faces)
+    if len(faces) == 0:
+        faces = face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.05,
+            minNeighbors=2,
+            minSize=(15, 15),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+    
     print(f"[DEBUG] Haar Cascade detected {len(faces)} face(s)")
     
-    # NO VALIDATION - Return all detections
     faces_list = [(int(x), int(y), int(w), int(h)) for (x, y, w, h) in faces]
     
     if len(faces_list) > 0:
