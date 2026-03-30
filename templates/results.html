@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Results - NEON FACE LAB</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="neon-container">
+    <h1 class="neon small">Results</h1>
+    <p class="sub">Processed: {{ video }}</p>
+
+    <div id="statusArea" style="text-align:center; margin-bottom:12px;">
+      <div class="status">Loading status...</div>
+    </div>
+    <div id="modelSummary" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:10px;">
+      <!-- per-model badges will be injected here -->
+    </div>
+
+    <div class="grid" id="cropsGrid">
+      {% for c in crops %}
+        <div class="card">
+          <img data-src="/files/{{ c }}" src="/static/css/placeholder.svg" data-file="{{ c }}" class="crop-thumb" alt="crop" />
+          <div class="caption">{{ c.split('/')[-1] }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div style="text-align:center; margin-top:14px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <a href="/" class="btn">Back</a>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <label for="modelPick" style="color:#9ae6b4; margin-right:6px;">Models:</label>
+        <select id="modelPick" multiple style="min-width:140px; padding:6px; border-radius:6px; background:rgba(0,0,0,0.4); color:#cbd5e1; border:1px solid rgba(255,255,255,0.04);">
+          <option value="unet" selected>U-Net</option>
+          <option value="deeplab">DeepLabV3+</option>
+          <option value="vit">ViT</option>
+        </select>
+      </div>
+      <button id="runInferenceBtn" class="btn">Run Inference on Crops</button>
+      <span id="inferenceSpinner" style="display:none; margin-left:10px;"><span class="spinner"></span></span>
+    </div>
+
+    <!-- Fullscreen modal -->
+    <div id="modal" class="modal" style="display:none;">
+      <span id="modalClose" class="modal-close">×</span>
+      <img id="modalImg" class="modal-content" src="" />
+      <div id="modalCaption" class="modal-caption"></div>
+    </div>
+
+    <script>
+      const vid = "{{ video }}";
+      function refreshStatus(){
+        fetch(`/status/${vid}`).then(r=>r.json()).then(data=>{
+          const s = data.status||{};
+          const statusArea = document.getElementById('statusArea');
+          const runBtnLocal = document.getElementById('runInferenceBtn');
+          const spinnerLocal = document.getElementById('inferenceSpinner');
+          if(s.state==='processing' || s.state==='extracting_frames' || s.state==='landmarking'){
+            let processed = s.processed || s.extracted || 0;
+            let total = s.total_frames || s.total_est || 0;
+            let pct = (total>0)? Math.round(processed/total*100):0;
+            statusArea.innerHTML = `<div class='status'>Processing... (${processed}/${total})</div><div class='progress-wrap'><div class='progress-bar' style='width:${pct}%'></div></div>`;
+            setTimeout(refreshStatus, 2000);
+          } else if(s.state==='saving_crops' || s.state==='landmarking'){
+            statusArea.innerHTML = `<div class='status'>Saving crops... (${s.detected_faces||0} faces)</div>`;
+            setTimeout(refreshStatus, 2000);
+          } else if(s.state==='inference_running'){
+            statusArea.innerHTML = `<div class='status'>Running inference...</div>`;
+            if(runBtnLocal){ runBtnLocal.disabled = true; runBtnLocal.style.opacity = 0.6; }
+            if(spinnerLocal) spinnerLocal.style.display = 'inline-block';
+            setTimeout(refreshStatus, 2000);
+          } else if(s.state==='done' || s.state==='inference_done'){
+            statusArea.innerHTML = `<div class='status done'>Processing complete</div>`;
+            if(runBtnLocal){ runBtnLocal.disabled = false; runBtnLocal.style.opacity = 1; }
+            if(spinnerLocal) spinnerLocal.style.display = 'none';
+            // populate crops and overlays
+            // show per-model badges if available
+            renderModelSummary(data.overlays_by_model || {}, s.inference || {});
+            // default to show crops if no overlays
+            if((data.overlays && data.overlays.length>0)){
+              populateImages(data.crops, data.overlays);
+            } else {
+              populateImages(data.crops, null);
+            }
+          } else if(s.state==='error' || s.state==='inference_error'){
+            statusArea.innerHTML = `<div class='status error'>Error: ${s.error||'unknown'}</div>`;
+            if(runBtnLocal){ runBtnLocal.disabled = false; runBtnLocal.style.opacity = 1; }
+            if(spinnerLocal) spinnerLocal.style.display = 'none';
+          } else {
+            statusArea.innerHTML = `<div class='status'>Status: ${s.state||'unknown'}</div>`;
+            setTimeout(refreshStatus, 3000);
+          }
+        }).catch(err=>{ console.log('status fetch failed', err); setTimeout(refreshStatus,4000); });
+      }
+
+      function populateImages(crops, overlays){
+        const grid = document.getElementById('cropsGrid');
+        grid.innerHTML = '';
+        const files = (overlays && overlays.length>0)? overlays : crops;
+        currentGallery = files.map(f=>`/files/${f}`);
+        files.forEach(f=>{
+          const div = document.createElement('div'); div.className='card';
+          const src = `/files/${f}`;
+          const img = document.createElement('img'); img.src = src; img.className='crop-thumb'; img.style.cursor='pointer';
+          img.onclick = ()=>openModal(src, f);
+          const cap = document.createElement('div'); cap.className='caption'; cap.innerText = f.split('/').pop();
+          div.appendChild(img); div.appendChild(cap); grid.appendChild(div);
+        });
+      }
+
+      function renderModelSummary(overlays_by_model, inference_info){
+        const box = document.getElementById('modelSummary');
+        box.innerHTML = '';
+        const keys = Object.keys(overlays_by_model || {});
+        if(keys.length===0){
+          // if inference_info contains model keys (older style), show those
+          if(inference_info && typeof inference_info === 'object'){
+            Object.keys(inference_info).forEach(k=>{
+              const v = inference_info[k];
+              const badge = document.createElement('button'); badge.className='btn'; badge.style.padding='6px 10px';
+              badge.innerText = `${k}: ${v.count||0}`;
+              badge.onclick = ()=>{
+                // try to open overlays by model name if available
+                const folder = v.out_folder || null;
+                if(folder){
+                  // find files under that folder via status API fetch
+                  fetch(`/status/${vid}`).then(r=>r.json()).then(d=>{ const ob = d.overlays_by_model || {}; const files = ob[k] || []; populateImages(files, files); });
+                } else {
+                  alert('No overlays for ' + k);
+                }
+              };
+              box.appendChild(badge);
+            });
+          }
+          return;
+        }
+        keys.forEach(k=>{
+          const files = overlays_by_model[k] || [];
+          const badge = document.createElement('button'); badge.className='btn'; badge.style.padding='6px 10px'; badge.innerText = `${k} (${files.length})`;
+          badge.onclick = ()=>{ populateImages(files, files); };
+          box.appendChild(badge);
+        });
+      }
+
+      // modal handlers with keyboard navigation
+      let currentGallery = [];
+      let currentIndex = 0;
+
+      function openModal(src, caption){
+        document.getElementById('modalImg').src = src;
+        document.getElementById('modalCaption').innerText = caption;
+        document.getElementById('modal').style.display = 'block';
+        // find index
+        currentIndex = currentGallery.indexOf(src);
+        if(currentIndex<0) currentIndex = 0;
+      }
+      document.getElementById('modalClose').onclick = ()=>{ document.getElementById('modal').style.display='none'; };
+
+      function showIndex(i){
+        if(i<0 || i>=currentGallery.length) return;
+        const src = currentGallery[i];
+        document.getElementById('modalImg').src = src;
+        document.getElementById('modalCaption').innerText = src.split('/').pop();
+        currentIndex = i;
+      }
+
+      document.addEventListener('keydown', (ev)=>{
+        if(document.getElementById('modal').style.display !== 'block') return;
+        if(ev.key === 'ArrowLeft') showIndex(currentIndex-1);
+        if(ev.key === 'ArrowRight') showIndex(currentIndex+1);
+        if(ev.key === 'Escape') document.getElementById('modal').style.display='none';
+      });
+
+      // inference button: disable while running and show spinner
+      const runBtn = document.getElementById('runInferenceBtn');
+      const spinner = document.getElementById('inferenceSpinner');
+      runBtn.addEventListener('click', ()=>{
+        const sel = document.getElementById('modelPick');
+        const chosen = Array.from(sel.selectedOptions).map(o=>o.value);
+        runBtn.disabled = true; runBtn.style.opacity = 0.6; spinner.style.display = 'inline-block';
+        fetch(`/inference/${vid}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({models: chosen})}).then(r=>r.json()).then(j=>{ refreshStatus(); }).catch(e=>{ alert('Could not start inference'); runBtn.disabled=false; runBtn.style.opacity=1; spinner.style.display='none'; });
+      });
+
+      // start polling
+      refreshStatus();
+    </script>
+
+    <div style="margin-top:18px; text-align:center;">
+      <form action="/cleanup" method="post" onsubmit="return confirm('Remove old files? This cannot be undone. Continue?')">
+        <label style="color:#9ae6b4; margin-right:8px;">Cleanup:</label>
+        <select name="which">
+          <option value="pipelines_crops">Saved crops</option>
+          <option value="uploads">Uploads</option>
+        </select>
+        <label style="color:#9ae6b4; margin-left:8px; margin-right:4px;">Older than</label>
+        <input name="days" value="30" style="width:60px;" /> days
+        <button type="submit" class="btn" style="margin-left:10px;">Run Cleanup</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
