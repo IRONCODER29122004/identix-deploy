@@ -17,12 +17,8 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY app.py .
-COPY mongodb_utils.py .
-COPY deepfake_detector.py .
-COPY templates/ templates/
-COPY static/ static/
+# Copy complete application code (routes, model modules, templates, assets, and model weights)
+COPY . .
 
 # Create necessary directories
 RUN mkdir -p data/uploads data/pipelines_frames data/pipelines_crops

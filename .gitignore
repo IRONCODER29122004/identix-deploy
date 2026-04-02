@@ -134,5 +134,5 @@ dist/
 !pipelines_frames/.gitkeep
 !pipelines_crops/.gitkeep
 
-# Keep the production checkpoint needed by the deployed app
-!models/best_model.pth
+# Keep project model checkpoints required by landmark_app.py
+!models/*.pth
