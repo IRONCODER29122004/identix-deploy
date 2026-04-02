@@ -10,6 +10,10 @@ from werkzeug.utils import secure_filename
 import threading
 import json
 import time
+import hashlib
+import secrets
+
+from mongodb_utils import get_db
 
 UPLOAD_FOLDER = 'data/uploads'
 PIPELINES_FRAMES_DIR = 'data/pipelines_frames'
@@ -18,9 +22,19 @@ ALLOWED_EXT = set(['mp4', 'mov', 'avi', 'mkv'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PIPELINES_FRAMES_DIR, exist_ok=True)
 os.makedirs(PIPELINES_CROPS_DIR, exist_ok=True)
+
+# Initialize MongoDB auth collection if configured.
+try:
+    db = get_db()
+    auths_collection = db['auths']
+    auths_collection.create_index('email', unique=True)
+except Exception as e:
+    auths_collection = None
+    print(f"MongoDB auth unavailable: {e}")
 
 STATUS_FILE = 'data/pipeline_status.json'
 
@@ -190,5 +204,78 @@ def cleanup():
         return redirect(url_for('index'))
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json(silent=True) or {}
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password') or ''
+        name = (data.get('name') or 'User').strip() or 'User'
+
+        if not email or not password:
+            return jsonify({'error': 'Email and password required'}), 400
+        if auths_collection is None:
+            return jsonify({'error': 'Database not ready'}), 500
+
+        hashed = hashlib.sha256(password.encode()).hexdigest()
+        try:
+            auths_collection.insert_one({'email': email, 'password': hashed, 'name': name})
+        except Exception as e:
+            if 'E11000' in str(e):
+                return jsonify({'error': 'User already exists'}), 409
+            raise
+
+        from flask import session
+        session['user_email'] = email
+        session['user_name'] = name
+
+        return jsonify({'success': True, 'message': 'Registration successful'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json(silent=True) or {}
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password') or ''
+        remember = bool(data.get('remember'))
+
+        if not email or not password:
+            return jsonify({'error': 'Email and password required'}), 400
+        if auths_collection is None:
+            return jsonify({'error': 'Database not ready'}), 500
+
+        hashed = hashlib.sha256(password.encode()).hexdigest()
+        user = auths_collection.find_one({'email': email})
+        if not user or user.get('password') != hashed:
+            return jsonify({'error': 'Invalid credentials'}), 401
+
+        from flask import session
+        session['user_email'] = email
+        session['user_name'] = user.get('name', 'User')
+        session.permanent = remember
+        return jsonify({'success': True, 'name': session['user_name']})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    from flask import session
+    session.clear()
+    return jsonify({'success': True})
+
+
+@app.route('/check-auth', methods=['GET'])
+def check_auth():
+    from flask import session
+    if 'user_email' in session:
+        return jsonify({'authenticated': True, 'email': session['user_email'], 'name': session.get('user_name', 'User')})
+    return jsonify({'authenticated': False})
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', '7860'))
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
