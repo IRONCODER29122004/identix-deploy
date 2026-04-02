@@ -37,6 +37,24 @@ except Exception as e:
     print(f"MongoDB auth unavailable: {e}")
 
 STATUS_FILE = 'data/pipeline_status.json'
+USERS_FALLBACK_FILE = 'data/local_users.json'
+
+
+def _load_local_users():
+    if not os.path.exists(USERS_FALLBACK_FILE):
+        return []
+    try:
+        with open(USERS_FALLBACK_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
+
+def _save_local_users(users):
+    os.makedirs(os.path.dirname(USERS_FALLBACK_FILE), exist_ok=True)
+    with open(USERS_FALLBACK_FILE, 'w', encoding='utf-8') as f:
+        json.dump(users, f)
 
 
 def allowed_file(filename):
@@ -219,16 +237,21 @@ def register():
 
         if not email or not password:
             return jsonify({'error': 'Email and password required'}), 400
-        if auths_collection is None:
-            return jsonify({'error': 'Database not ready'}), 500
-
         hashed = hashlib.sha256(password.encode()).hexdigest()
-        try:
-            auths_collection.insert_one({'email': email, 'password': hashed, 'name': name})
-        except Exception as e:
-            if 'E11000' in str(e):
+        if auths_collection is None:
+            # Standalone fallback mode for environments without MongoDB.
+            users = _load_local_users()
+            if any((u.get('email') or '').lower() == email for u in users):
                 return jsonify({'error': 'User already exists'}), 409
-            raise
+            users.append({'email': email, 'password': hashed, 'name': name})
+            _save_local_users(users)
+        else:
+            try:
+                auths_collection.insert_one({'email': email, 'password': hashed, 'name': name})
+            except Exception as e:
+                if 'E11000' in str(e):
+                    return jsonify({'error': 'User already exists'}), 409
+                raise
 
         from flask import session
         session['user_email'] = email
@@ -249,11 +272,12 @@ def login():
 
         if not email or not password:
             return jsonify({'error': 'Email and password required'}), 400
-        if auths_collection is None:
-            return jsonify({'error': 'Database not ready'}), 500
-
         hashed = hashlib.sha256(password.encode()).hexdigest()
-        user = auths_collection.find_one({'email': email})
+        if auths_collection is None:
+            users = _load_local_users()
+            user = next((u for u in users if (u.get('email') or '').lower() == email), None)
+        else:
+            user = auths_collection.find_one({'email': email})
         if not user or user.get('password') != hashed:
             return jsonify({'error': 'Invalid credentials'}), 401
 
