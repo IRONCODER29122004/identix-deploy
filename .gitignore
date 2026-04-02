@@ -1,0 +1,138 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+
+# Environment Variables (Secrets!)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Application Data (generated at runtime)
+data/
+uploads/
+pipelines_frames/
+pipelines_crops/
+*.db
+*.sqlite
+*.sqlite3
+
+# Large Files
+*.pth
+*.pt
+*.h5
+*.keras
+*.pkl
+*.pickle
+
+# Large Media
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+*.m4v
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+nohup.out
+
+# Temporary Files
+*.tmp
+*.bak
+*~
+.temp/
+tmp/
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Git
+.git/
+
+# Node/npm (if using any web build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Certificates/Keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Backups
+*.backup
+*.bkp
+backup/
+backups/
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info
+.eggs/
+
+# Keep important data directories (but ignore contents)
+!data/.gitkeep
+!uploads/.gitkeep
+!pipelines_frames/.gitkeep
+!pipelines_crops/.gitkeep
+
+# Keep the production checkpoint needed by the deployed app
+!models/best_model.pth
