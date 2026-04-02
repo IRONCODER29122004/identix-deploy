@@ -72,6 +72,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/facial-landmarks')
+def facial_landmarks():
+    return render_template('index.html')
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'video' not in request.files:
