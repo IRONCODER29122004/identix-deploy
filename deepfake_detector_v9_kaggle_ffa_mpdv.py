@@ -13,6 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image, ImageOps
+from numpy_compat import ensure_numpy_pickle_compat
 
 try:
     from deepfake_detector_v2 import SegformerFeatureExtractor
@@ -204,6 +205,7 @@ class DeepfakeDetectorV9KaggleFFAMPDV:
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model not found: {model_path}")
 
+        ensure_numpy_pickle_compat()
         payload = torch.load(self.model_path, map_location=self.device)
         if isinstance(payload, dict):
             self.config = payload.get("config", {})

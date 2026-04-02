@@ -57,6 +57,7 @@ from functools import wraps
 import secrets
 from mongodb_utils import get_db
 from segformer_model import SegformerEdgeAware, FaceDetector, create_colored_mask, overlay_mask_on_image
+from numpy_compat import ensure_numpy_pickle_compat
 
 # MediaPipe/third-party landmark detector removed by user request.
 MEDIAPIPE_AVAILABLE = False
@@ -64,6 +65,9 @@ mediapipe_detector = None
 
 APP_DIR = Path(__file__).resolve().parent
 MODELS_DIR = APP_DIR / 'models'
+
+# Ensure model checkpoints saved with different NumPy internals can be loaded.
+ensure_numpy_pickle_compat()
 
 
 def _abs_path(path_str):

@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import torchvision.transforms as T
+from numpy_compat import ensure_numpy_pickle_compat
 
 # ==================== Model Architecture ====================
 
@@ -210,6 +211,7 @@ class SegFormerPipeline:
         
         # Load trained weights if provided
         if model_path:
+            ensure_numpy_pickle_compat()
             checkpoint = torch.load(model_path, map_location=self.device)
             # Handle different checkpoint formats
             if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
