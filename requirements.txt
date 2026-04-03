@@ -11,6 +11,7 @@ waitress==2.1.2
 torch==2.5.1
 torchvision==0.20.1
 transformers==4.44.2
+timm==1.0.19
 
 # Image Processing
 opencv-python-headless==4.8.1.78
