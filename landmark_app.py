@@ -59,8 +59,6 @@ from mongodb_utils import get_db
 from segformer_model import SegformerEdgeAware, FaceDetector, create_colored_mask, overlay_mask_on_image
 from numpy_compat import ensure_numpy_pickle_compat
 
-DEEPFAKE_IMPORT_ERRORS = {}
-
 # MediaPipe/third-party landmark detector removed by user request.
 MEDIAPIPE_AVAILABLE = False
 mediapipe_detector = None
@@ -86,40 +84,33 @@ def _first_existing_path(candidates):
             return p
     return None
 
-    except Exception as e:
+app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max file size for videos
-        DEEPFAKE_IMPORT_ERRORS['v2'] = str(e)
 app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))  # Secret key for sessions
 app.permanent_session_lifetime = timedelta(days=30)
-    except Exception as e:
+
 user_history = {}  # Store upload history per user
-        DEEPFAKE_IMPORT_ERRORS['v3'] = str(e)
 
 # Initialize MongoDB collections
-    except Exception as e:
+try:
     db = get_db()
-        DEEPFAKE_IMPORT_ERRORS['v4'] = str(e)
     auths_collection = db['auths']
     # Ensure unique email index
-    except Exception as e:
+    auths_collection.create_index('email', unique=True)
 except Exception as e:
-        DEEPFAKE_IMPORT_ERRORS['v5'] = str(e)
     auths_collection = None
     print(f"⚠ MongoDB not available: {e}")
-    except Exception as e:
+
 # Device configuration
-        DEEPFAKE_IMPORT_ERRORS['v6'] = str(e)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    except Exception as e:
+# ==================== Model Architecture ====================
 class ConvBNReLU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1):
-        DEEPFAKE_IMPORT_ERRORS['v7_v8'] = str(e)
         super(ConvBNReLU, self).__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False)
-    except Exception as e:
+        self.bn = nn.BatchNorm2d(out_channels)
         self.relu = nn.ReLU(inplace=True)
-        DEEPFAKE_IMPORT_ERRORS['v9'] = str(e)
     
     def forward(self, x):
         return self.relu(self.bn(self.conv(x)))
@@ -402,8 +393,7 @@ def get_deepfake_detector_v2():
         return deepfake_detector_v2
 
     if load_v2_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v2', 'unknown import error')
-        deepfake_v2_load_error = f"deepfake_detector_v2 module is not available: {reason}"
+        deepfake_v2_load_error = "deepfake_detector_v2 module is not available"
         raise RuntimeError(deepfake_v2_load_error)
 
     model_candidates = [
@@ -432,8 +422,7 @@ def get_deepfake_detector_v3():
         return deepfake_detector_v3
 
     if load_v3_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v3', 'unknown import error')
-        deepfake_v3_load_error = f"deepfake_detector_v3_deepfakebench module is not available: {reason}"
+        deepfake_v3_load_error = "deepfake_detector_v3_deepfakebench module is not available"
         raise RuntimeError(deepfake_v3_load_error)
 
     model_candidates = [
@@ -458,8 +447,7 @@ def get_deepfake_detector_v4():
         return deepfake_detector_v4
 
     if load_v4_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v4', 'unknown import error')
-        deepfake_v4_load_error = f"deepfake_detector_v4_selimsef module is not available: {reason}"
+        deepfake_v4_load_error = "deepfake_detector_v4_selimsef module is not available"
         raise RuntimeError(deepfake_v4_load_error)
 
     model_candidates = [
@@ -491,8 +479,7 @@ def get_deepfake_detector_v5():
         return deepfake_detector_v5
 
     if load_v5_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v5', 'unknown import error')
-        deepfake_v5_load_error = f"deepfake_detector_v5_meso4inception module is not available: {reason}"
+        deepfake_v5_load_error = "deepfake_detector_v5_meso4inception module is not available"
         raise RuntimeError(deepfake_v5_load_error)
 
     model_candidates = [
@@ -521,8 +508,7 @@ def get_deepfake_detector_v6():
         return deepfake_detector_v6
 
     if load_v6_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v6', DEEPFAKE_IMPORT_ERRORS.get('v4', 'unknown import error'))
-        deepfake_v6_load_error = f"deepfake_detector_v6_selim_ensemble module is not available: {reason}"
+        deepfake_v6_load_error = "deepfake_detector_v6_selim_ensemble module is not available"
         raise RuntimeError(deepfake_v6_load_error)
 
     model_candidates = [
@@ -554,8 +540,7 @@ def get_deepfake_detector_v7():
         return deepfake_detector_v7
 
     if load_v7_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v7_v8', 'unknown import error')
-        deepfake_v7_load_error = f"deepfake_detector_v7_kaggle_effnet module is not available: {reason}"
+        deepfake_v7_load_error = "deepfake_detector_v7_kaggle_effnet module is not available"
         raise RuntimeError(deepfake_v7_load_error)
 
     model_candidates = [
@@ -580,8 +565,7 @@ def get_deepfake_detector_v8():
         return deepfake_detector_v8
 
     if load_v8_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v7_v8', 'unknown import error')
-        deepfake_v8_load_error = f"deepfake_detector_v7_kaggle_effnet module is not available: {reason}"
+        deepfake_v8_load_error = "deepfake_detector_v7_kaggle_effnet module is not available"
         raise RuntimeError(deepfake_v8_load_error)
 
     model_candidates = [
@@ -606,8 +590,7 @@ def get_deepfake_detector_v9():
         return deepfake_detector_v9
 
     if load_v9_model is None:
-        reason = DEEPFAKE_IMPORT_ERRORS.get('v9', 'unknown import error')
-        deepfake_v9_load_error = f"deepfake_detector_v9_kaggle_ffa_mpdv module is not available: {reason}"
+        deepfake_v9_load_error = "deepfake_detector_v9_kaggle_ffa_mpdv module is not available"
         raise RuntimeError(deepfake_v9_load_error)
 
     model_candidates = [
