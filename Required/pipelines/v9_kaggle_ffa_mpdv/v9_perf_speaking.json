@@ -1,0 +1,44 @@
+{
+  "timestamp_utc": "2026-03-26T04:56:43.840117+00:00",
+  "tag": "perf_check_speaking",
+  "input_path": "D:\\link2\\Capstone 4-1\\Code_try_1\\Required\\faceswap_samples\\speaking_person.mp4",
+  "model_path": "D:\\link2\\Capstone 4-1\\Code_try_1\\Required\\models\\ffa_mpdv_v9_kaggle_paper_baseline.pth",
+  "device": "cpu",
+  "threshold": 0.66,
+  "max_frames": 16,
+  "result": {
+    "input_type": "video",
+    "sampled_frames": 16,
+    "label": "REAL",
+    "score": 0.538452061939663,
+    "proba_fake": null,
+    "confidence": 0.07690412387932599,
+    "mean_p": 0.533690788937548,
+    "q75": 0.641169614922521,
+    "q25": 0.3663458669887524,
+    "logit": null,
+    "logit_std": null,
+    "tta_views": null,
+    "raw": {
+      "video_probabilities": [
+        0.6352692052101212,
+        0.5937171675519254,
+        0.2659752611850197,
+        0.5315221762558817,
+        0.7448424243591392,
+        0.6280018932240734,
+        0.2752188269958806,
+        0.44212137216793096,
+        0.962169689082813,
+        0.8082435895386324,
+        0.3594231873734405,
+        0.1410857113423618,
+        0.4886686425831827,
+        0.6588708440597205,
+        0.36865342686052305,
+        0.6352692052101212
+      ],
+      "aggregation": "score = 0.7*mean + 0.2*q75 + 0.1*q25"
+    }
+  }
+}

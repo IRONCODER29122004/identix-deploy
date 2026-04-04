@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Identix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --bg-color: #ffffff;
+            --card-bg: #f8f9ff;
+            --text-color: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1);
+            --accent-bg: #f7fafc;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #7c8eef;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+            --accent-bg: #1c2128;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Navigation - Same as home */
+        .navbar {
+            background: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .logo i {
+            -webkit-text-fill-color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: var(--accent-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--primary-gradient);
+            padding: 100px 40px 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .page-header p {
+            font-size: 1.3em;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .content-section h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content-section p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .mission-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .value-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .value-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .value-card p {
+            font-size: 1.1em;
+        }
+
+        .team-section {
+            background: var(--card-bg);
+            padding: 80px 40px;
+        }
+
+        .team-grid {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .team-member {
+            background: var(--bg-color);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+        }
+
+        .team-member h4 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .team-member p {
+            color: var(--text-secondary);
+            font-size: 1em;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-box h3 {
+            font-size: 3.5em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5em;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .content-section h2 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-fingerprint"></i>
+                <span>Identix</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/blog">Blog</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>About Identix</h1>
+        <p>Pioneering the future of facial analysis and identity recognition technology through advanced AI and deep learning.</p>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="content-section">
+        <h2>Our Mission</h2>
+        <p>At Identix, we believe in making advanced facial analysis technology accessible, reliable, and ethical. Our mission is to develop state-of-the-art AI solutions that help researchers, developers, and businesses leverage the power of facial recognition and analysis while maintaining the highest standards of privacy and security.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>2024</h3>
+                <p>Founded</p>
+            </div>
+            <div class="stat-box">
+                <h3>99.9%</h3>
+                <p>Accuracy Rate</p>
+            </div>
+            <div class="stat-box">
+                <h3>15+</h3>
+                <p>Features Detected</p>
+            </div>
+            <div class="stat-box">
+                <h3>1M+</h3>
+                <p>Images Analyzed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Story -->
+    <div class="content-section">
+        <h2>Our Story</h2>
+        <div class="two-column">
+            <div>
+                <p>Identix was born from a capstone project focused on advancing facial landmark detection technology. What started as an academic pursuit quickly evolved into a comprehensive platform for facial analysis.</p>
+                <p>Our team recognized the growing need for accurate, real-time facial analysis tools that could be easily integrated into various applications - from security systems to healthcare diagnostics, from entertainment to accessibility solutions.</p>
+            </div>
+            <div>
+                <p>We built our platform on the foundation of BiSeNet, a cutting-edge semantic segmentation architecture, and enhanced it with custom training on extensive facial datasets. The result is a system that achieves industry-leading accuracy while maintaining real-time performance.</p>
+                <p>Today, Identix continues to evolve, adding new capabilities and refining existing ones to meet the ever-changing needs of our users and the technology landscape.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Values Section -->
+    <div class="content-section">
+        <h2>Our Core Values</h2>
+        <div class="mission-values">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Accuracy First</h3>
+                <p>We prioritize precision and reliability in every model we build. Our facial detection systems achieve 99.9% accuracy through rigorous testing and continuous improvement.</p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h3>Privacy & Security</h3>
+                <p>We believe in ethical AI. Your data is processed securely, never stored without permission, and we comply with GDPR and global privacy standards.</p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>Innovation</h3>
+                <p>We constantly push the boundaries of what's possible in facial analysis, incorporating the latest research and technologies into our platform.</p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Accessibility</h3>
+                <p>Advanced AI shouldn't be complicated. We make powerful facial analysis tools easy to use through intuitive interfaces and comprehensive documentation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-section">
+        <div class="content-section" style="padding: 0;">
+            <h2 style="text-align: center;">Our Team</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">A diverse group of AI researchers, engineers, and designers passionate about advancing facial analysis technology.</p>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4>Research Team</h4>
+                    <p>AI & Machine Learning Experts</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h4>Development Team</h4>
+                    <p>Full-Stack Engineers</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h4>Design Team</h4>
+                    <p>UX/UI Specialists</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Data Team</h4>
+                    <p>Data Scientists & Analysts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technology Section -->
+    <div class="content-section">
+        <h2>Our Technology</h2>
+        <p>Identix is powered by advanced deep learning architectures and trained on extensive facial datasets:</p>
+        
+        <div class="mission-values">
+            <div class="value-card">
+                <h3>🧠 BiSeNet Architecture</h3>
+                <p>Our core uses BiSeNet (Bilateral Segmentation Network) for real-time semantic segmentation with dual-pathway architecture.</p>
+            </div>
+            
+            <div class="value-card">
+                <h3>⚡ Real-Time Processing</h3>
+                <p>Process images in under 100ms with GPU acceleration. Fast enough for real-time video analysis applications.</p>
+            </div>
+            
+            <div class="value-card">
+                <h3>🎯 Multi-Feature Detection</h3>
+                <p>Detect 15+ facial features including eyes, nose, mouth, eyebrows, skin regions, and more with pixel-perfect accuracy.</p>
+            </div>
+            
+            <div class="value-card">
+                <h3>🔧 Custom Training</h3>
+                <p>Models trained on diverse datasets ensuring high accuracy across different ethnicities, ages, lighting conditions, and angles.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Identix. All rights reserved.</p>
+        <p style="margin-top: 10px;">
+            <a href="/privacy-policy" style="color: var(--text-secondary); margin: 0 10px;">Privacy Policy</a> |
+            <a href="/terms-of-service" style="color: var(--text-secondary); margin: 0 10px;">Terms of Service</a> |
+            <a href="/contact" style="color: var(--text-secondary); margin: 0 10px;">Contact</a>
+        </p>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+    </script>
+</body>
+</html>

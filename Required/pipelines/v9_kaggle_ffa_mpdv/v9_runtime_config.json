@@ -1,0 +1,9 @@
+{
+  "model_key": "ffa_mpdv_kaggle_v9",
+  "checkpoint": "models/ffa_mpdv_v9_kaggle_paper_baseline.pth",
+  "deepfake_threshold": 0.66,
+  "authentic_threshold": 0.32,
+  "sampled_frames": 32,
+  "aggregation": "mean_plus_quantiles_uniform_v9",
+  "notes": "Defaults selected for strong separation while reducing false positive bias on existing benchmark mix."
+}

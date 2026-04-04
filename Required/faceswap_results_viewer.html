@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceSwap Results Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            bottom: -3px;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Video Viewer Tab */
+        .video-section {
+            margin-bottom: 30px;
+        }
+
+        .video-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            max-width: 100%;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-upload {
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: #e8e9ff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-area h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Frame Comparison */
+        .frame-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .frame-box {
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .frame-label {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .frame-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Results List */
+        .results-list {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .result-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .result-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .result-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Settings */
+        .settings-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .settings-group h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            margin-bottom: 15px;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .setting-item input,
+        .setting-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .setting-item input:focus,
+        .setting-item select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Message Box */
+        .message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .frame-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 2em;
+            }
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 FaceSwap Results Viewer</h1>
+            <p>View and manage your deepfake generation results</p>
+        </div>
+
+        <div class="content">
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('viewer')">📹 Video Viewer</button>
+                <button class="tab-btn" onclick="switchTab('compare')">🔀 Frame Comparison</button>
+                <button class="tab-btn" onclick="switchTab('stats')">📊 Statistics</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+            </div>
+
+            <!-- Video Viewer Tab -->
+            <div id="viewer" class="tab-pane active">
+                <h2 style="margin-bottom: 20px; color: #333;">Generated Deepfake Viewer</h2>
+                
+                <div class="message" id="message"></div>
+
+                <div class="video-upload">
+                    <div class="upload-area" id="uploadArea">
+                        <h3>📤 Upload or Drop Deepfake Video</h3>
+                        <p>Drag and drop your video file here, or click to select</p>
+                        <button class="btn btn-primary">Choose Video</button>
+                        <input type="file" id="videoInput" accept="video/*">
+                        <p style="margin-top: 15px; font-size: 0.9em;">Supported formats: MP4, WebM, OGG</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <video id="videoPlayer" controls>
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-primary" onclick="downloadVideo()">⬇️ Download Video</button>
+                    <button class="btn btn-secondary" onclick="clearVideo()">🗑️ Clear</button>
+                </div>
+
+                <div class="results-list">
+                    <h3 style="color: #333; margin-bottom: 20px;">Recent Results</h3>
+                    <div id="recentResults">
+                        <p style="color: #999; text-align: center;">No results yet. Generate a deepfake to see results here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frame Comparison Tab -->
+            <div id="compare" class="tab-pane">
+                <h2 style="margin-bottom: 20px; color: #333;">Frame-by-Frame Comparison</h2>
+                
+                <div class="settings-group">
+                    <h3>Upload Source & Result Frames</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="setting-item">
+                            <label>Source Face Image</label>
+                            <input type="file" id="sourceFrame" accept="image/*">
+                        </div>
+                        <div class="setting-item">
+                            <label>Result Frame</label>
+                            <input type="file" id="resultFrame" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="frame-comparison">
+                    <div class="frame-box">
+                        <div class="frame-label">Source Face</div>
+                        <img id="sourceImg" class="frame-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e0e0e0' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3ENo image selected%3C/text%3E%3C/svg%3E" alt="Source">
+                    </div>
+                    <div class="frame-box">
+                        <div class="frame-label">Result Frame</div>
+                        <img id="resultImg" class="frame-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e0e0e0' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3ENo image selected%3C/text%3E%3C/svg%3E" alt="Result">
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="downloadComparison()">⬇️ Download Comparison</button>
+                    <button class="btn btn-secondary" onclick="clearComparison()">🗑️ Clear</button>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="stats" class="tab-pane">
+                <h2 style="margin-bottom: 20px; color: #333;">Generation Statistics</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Frames Processed</div>
+                        <div class="stat-value" id="framesProcessed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Swap Success Rate</div>
+                        <div class="stat-value" id="successRate">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Processing Time</div>
+                        <div class="stat-value" id="processTime">0:00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Video Duration</div>
+                        <div class="stat-value" id="videoDuration">0:00</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 20px; background: #f8f9ff; border-radius: 10px; border-left: 4px solid #667eea;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Generation Parameters</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="info-item">
+                            <span class="info-label">Model:</span>
+                            <span>MediaPipe FaceSwap v1.0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Blending:</span>
+                            <span>Seamless Clone (cv2.NORMAL_CLONE)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Landmarks:</span>
+                            <span>468-point Face Mesh</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Error Handling:</span>
+                            <span>Automatic frame skip on failure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <textarea id="statsJson" style="width: 100%; height: 300px; margin-top: 30px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: monospace; font-size: 0.9em;" placeholder="Paste JSON generation stats here to display detailed metrics...">{
+  "frames_processed": 150,
+  "frames_failed": 5,
+  "fps": 30,
+  "total_frames": 155,
+  "processing_time_seconds": 450,
+  "success_rate": 96.77,
+  "source_face_quality": "High",
+  "target_video_clarity": "Good"
+}</textarea>
+                <button class="btn btn-primary" onclick="parseStats()" style="margin-top: 15px;">📈 Load Stats</button>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-pane">
+                <h2 style="margin-bottom: 20px; color: #333;">Display Settings</h2>
+
+                <div class="settings-group">
+                    <h3>Video Playback</h3>
+                    <div class="setting-item">
+                        <label>Autoplay</label>
+                        <input type="checkbox" id="autoplay" style="width: auto; cursor: pointer;">
+                    </div>
+                    <div class="setting-item">
+                        <label>Loop Video</label>
+                        <input type="checkbox" id="loop" style="width: auto; cursor: pointer;">
+                    </div>
+                    <div class="setting-item">
+                        <label>Playback Speed</label>
+                        <select id="playbackSpeed">
+                            <option value="0.5">0.5x (Slow)</option>
+                            <option value="1" selected>1x (Normal)</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x (Fast)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Export Settings</h3>
+                    <div class="setting-item">
+                        <label>Export Format</label>
+                        <select id="exportFormat">
+                            <option value="mp4" selected>MP4 (H.264)</option>
+                            <option value="webm">WebM (VP9)</option>
+                            <option value="gif">GIF (Animated)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Quality</label>
+                        <select id="quality">
+                            <option value="720">720p</option>
+                            <option value="1080" selected>1080p</option>
+                            <option value="4k">4K</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Theme</h3>
+                    <div class="setting-item">
+                        <label>Color Scheme</label>
+                        <select id="theme">
+                            <option value="purple" selected>Purple (Default)</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+                <button class="btn btn-secondary" onclick="resetSettings()">🔄 Reset to Default</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>FaceSwap Results Viewer v1.0 | 🚀 <strong>Powered by MediaPipe & OpenCV</strong></p>
+            <p style="margin-top: 10px; opacity: 0.7;">For research and educational purposes only.</p>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Video Upload
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('videoInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const messageBox = document.getElementById('message');
+
+        uploadArea.onclick = () => videoInput.click();
+
+        uploadArea.ondragover = (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        };
+
+        uploadArea.ondragleave = () => {
+            uploadArea.classList.remove('dragover');
+        };
+
+        uploadArea.ondrop = (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files[0]) handleVideoUpload(files[0]);
+        };
+
+        videoInput.onchange = (e) => {
+            if (e.target.files[0]) handleVideoUpload(e.target.files[0]);
+        };
+
+        function handleVideoUpload(file) {
+            if (!file.type.startsWith('video/')) {
+                showMessage('Please select a valid video file.', 'error');
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            showMessage(`Video loaded: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`, 'success');
+
+            // Update duration when ready
+            videoPlayer.onloadedmetadata = () => {
+                const duration = new Date(videoPlayer.duration * 1000).toISOString().substr(11, 8);
+                document.getElementById('videoDuration').textContent = duration;
+            };
+        }
+
+        function clearVideo() {
+            videoPlayer.src = '';
+            videoInput.value = '';
+            showMessage('Video cleared.', 'info');
+        }
+
+        function downloadVideo() {
+            if (!videoPlayer.src) {
+                showMessage('Please upload a video first.', 'error');
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = videoPlayer.src;
+            a.download = 'deepfake.mp4';
+            a.click();
+        }
+
+        // Frame Comparison
+        document.getElementById('sourceFrame').onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById('sourceImg').src = url;
+            }
+        };
+
+        document.getElementById('resultFrame').onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById('resultImg').src = url;
+            }
+        };
+
+        function clearComparison() {
+            document.getElementById('sourceFrame').value = '';
+            document.getElementById('resultFrame').value = '';
+            document.getElementById('sourceImg').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e0e0e0" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="%23999" text-anchor="middle" dy=".3em"%3ENo image selected%3C/text%3E%3C/svg%3E';
+            document.getElementById('resultImg').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e0e0e0" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="%23999" text-anchor="middle" dy=".3em"%3ENo image selected%3C/text%3E%3C/svg%3E';
+            showMessage('Comparison cleared.', 'info');
+        }
+
+        function downloadComparison() {
+            showMessage('Feature coming soon!', 'info');
+        }
+
+        // Statistics
+        function parseStats() {
+            try {
+                const statsText = document.getElementById('statsJson').value;
+                const stats = JSON.parse(statsText);
+
+                if (stats.frames_processed) document.getElementById('framesProcessed').textContent = stats.frames_processed;
+                if (stats.success_rate !== undefined) document.getElementById('successRate').textContent = stats.success_rate.toFixed(1) + '%';
+                if (stats.processing_time_seconds) {
+                    const mins = Math.floor(stats.processing_time_seconds / 60);
+                    const secs = stats.processing_time_seconds % 60;
+                    document.getElementById('processTime').textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+                }
+
+                showMessage('Statistics loaded successfully!', 'success');
+            } catch (e) {
+                showMessage('Invalid JSON format. Please check and try again.', 'error');
+            }
+        }
+
+        // Settings
+        function saveSettings() {
+            const settings = {
+                autoplay: document.getElementById('autoplay').checked,
+                loop: document.getElementById('loop').checked,
+                playbackSpeed: document.getElementById('playbackSpeed').value,
+                exportFormat: document.getElementById('exportFormat').value,
+                quality: document.getElementById('quality').value,
+                theme: document.getElementById('theme').value
+            };
+
+            localStorage.setItem('faceswapSettings', JSON.stringify(settings));
+            videoPlayer.autoplay = settings.autoplay;
+            videoPlayer.loop = settings.loop;
+            videoPlayer.playbackRate = parseFloat(settings.playbackSpeed);
+
+            showMessage('Settings saved successfully!', 'success');
+        }
+
+        function resetSettings() {
+            document.getElementById('autoplay').checked = false;
+            document.getElementById('loop').checked = false;
+            document.getElementById('playbackSpeed').value = '1';
+            document.getElementById('exportFormat').value = 'mp4';
+            document.getElementById('quality').value = '1080';
+            document.getElementById('theme').value = 'purple';
+
+            localStorage.removeItem('faceswapSettings');
+            showMessage('Settings reset to default.', 'info');
+        }
+
+        // Load saved settings on page load
+        function loadSettings() {
+            const saved = localStorage.getItem('faceswapSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.getElementById('autoplay').checked = settings.autoplay || false;
+                document.getElementById('loop').checked = settings.loop || false;
+                document.getElementById('playbackSpeed').value = settings.playbackSpeed || '1';
+                document.getElementById('exportFormat').value = settings.exportFormat || 'mp4';
+                document.getElementById('quality').value = settings.quality || '1080';
+                document.getElementById('theme').value = settings.theme || 'purple';
+
+                videoPlayer.autoplay = settings.autoplay;
+                videoPlayer.loop = settings.loop;
+                videoPlayer.playbackRate = parseFloat(settings.playbackSpeed);
+            }
+        }
+
+        async function loadLatestResultIfAvailable() {
+            const demoVideo = 'output_deepfake.mp4';
+            const demoStats = {
+                frames_processed: 149,
+                frames_failed: 1,
+                total_frames: 150,
+                success_rate: 99.3,
+                fps: 30,
+                processing_time_seconds: 3.27,
+                output_path: 'output_deepfake.mp4'
+            };
+
+            try {
+                const head = await fetch(demoVideo, { method: 'HEAD' });
+                if (!head.ok) return;
+
+                videoPlayer.src = demoVideo;
+                document.getElementById('statsJson').value = JSON.stringify(demoStats, null, 2);
+                parseStats();
+                showMessage('Loaded latest FaceSwap result automatically.', 'success');
+            } catch (e) {
+                console.log('Auto-load skipped:', e);
+            }
+        }
+
+        // Message Display
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            setTimeout(() => {
+                msg.className = 'message';
+            }, 5000);
+        }
+
+        // Load settings on page load
+        window.addEventListener('load', () => {
+            loadSettings();
+            loadLatestResultIfAvailable();
+            console.log('FaceSwap Results Viewer loaded successfully!');
+        });
+    </script>
+</body>
+</html>

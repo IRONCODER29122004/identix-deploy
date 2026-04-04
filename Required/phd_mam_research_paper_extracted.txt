@@ -1,0 +1,1825 @@
+
+
+===== PAGE 1 =====
+Received 18 September 2025, accepted 2 November 2025, date of publication 10 November 2025,
+date of current version 1 December 2025.
+Digital Object Identifier 10.1 109/ACCESS.2025.3630761
+Deepfake Detection Using Meso4Net and Capsule
+Networks Through Facial Feature and Pattern
+Analysis
+NAGALAKSHMI PASUPULETI
+AND D. VENKATA LAKSHMI
+School of Computer Science and Engineering, VIT-AP University, Amaravati 522237, India
+Corresponding author: D. V enkata Lakshmi (venkatalakshmi.d@vitap.ac.in)
+ABSTRACT AI may now be expanded, and its technical potential is increasing every day. The quick
+expansion is causing risky issues. Complete alteration is taking place in the phony images and films.
+Images are being clicked and deep faked without anyone’s consent, which raises privacy concerns. This is
+highly targeted towards politicians and actors. The public also believes in deepfakes, and in these situations,
+individuals are unable to distinguish between genuine and fake. The purpose of this research is to determine
+which is right and which is not. The Facial Feature Analysis and Miniature Pattern Dissimilarity V erification
+model (FFA-MPDV), which combines meso4 for lightweight forgery detection with a capsule network
+to improve special feature retention, is part of the suggested model in this study. This makes it easier to
+spot modified characteristics, even subtle ones like lips, eyes, and facial expressions. Unlike traditional
+deepfake detection methods, which often struggle with subtle image modifications, the proposed FFA-
+MPDV model integrates meso4 and capsule networks, offering enhanced feature retention and sensitivity
+to fine-grained alterations. Additionally, the use of a spatial attention mechanism and FPN for multi-scale
+feature extraction ensures higher accuracy and faster identification. This unique combination significantly
+improves detection performance, achieving an impressive 97.3% accuracy, setting it apart from current state-
+of-the-art techniques and making it possible to identify which photographs are real and which are fraudulent
+in a matter of seconds.
+INDEX TERMS MeSo4Net, capsule networks, deepfake, artificial intelligence (AI), machine learning (ML),
+deep learning (DL), feature pyramid network (FPN), spatial attention.
+I. INTRODUCTION
+Multimedia manipulation has been made easier with new
+methods and tools thanks to recent several decades’ advance-
+ments in AI, ML, and DL. Technology has been utilized
+for good reasons most of the time, like education and
+entertainment, but people have also taken the upper hand for
+illegal or sinister ends. Films, pictures, and audios produced
+from realistic-looking and high-quality content have been
+used for the spread of false information, incitement of
+hatred and unrest, or even for harassing and blackmailing
+individuals. Deepfake technology can be used to assist
+individuals who are deaf to provide them with a new, better
+The associate editor coordinating the review of this manuscript and
+approving it for publication was Vincenzo Conti
+.
+voice, commercially. The availability of devices such as
+smartphones, watches, iPads, and others has made it easier for
+photographs to circulate. These photos are being deep-faked
+and shared on social media, raising several privacy concerns.
+Deep learning and fake images combine to form deep fakes.
+Popular celebrities are the primary targets of this deepfake,
+which uses AI technology to replicate any image of a human,
+animal, plant, etc. The number of models that can react
+instantly is growing along with technology. The mess caused
+may be readily resolved with proofs using this state-of-
+the-art deep learning technique. Because the video prompts
+are made with duplicate photos of people that might give
+the impression that the person is genuine, they are quite
+frightening. It can be challenging for anybody to identify
+these kinds of photographs, but research is being done to
+198970
+
+ 2025 The Authors. This work is licensed under a Creative Commons Attribution 4.0 License.
+For more information, see https://creativecommons.org/licenses/by/4.0/ VOLUME 13, 2025
+
+===== PAGE 2 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+detect them properly so that the offender can be identified
+and the fake image can be quickly identified. This device is
+likewise very basic and straightforward to use. It takes little
+time to detect, and using it also costs less [1].
+Deep fake is the process of creating photos with AI,
+and one cannot determine whether they are real or phony.
+Neural Networking, which combines algorithms similar to
+intelligent autoencoders, GANs, etc. The use of GANs and
+DL algorithms enables users to produce phony/fake images,
+sounds, and movies that appear authentic but are fake. The
+study focuses on deep fake picture identification through a
+hybrid model that contains two picture classifications in the
+collection. The acronyms used in this paper are summarized
+in [Table 1] for ease of reference. Based just on the photos,
+the images are gathered and labeled as true or phony. Using
+inventive techniques, deepfakes can be utilized to enhance
+the quality of animation or movies. Using their imagination
+is also beneficial for those who have lost a loved one.
+Deepfakes have recently grown to be noted for their highly
+reproduced, realistic, and altered videos. Many strategies for
+addressing the issues brought up by Deepfakes have now
+been documented in the literature. To distinguish between
+what is genuine and what is not, the research created a
+deepfake picture detection using the meso4net and capsule
+networks integration model, commonly referred to as the
+hybrid model. After gathering, training, and testing data,
+the model can spot and categorize which images are real
+and which are fraudulent. To provide precise predictions, the
+meso4net detects differences in altered images, and capsule
+networks identify the characteristics of images and the images
+that are connected with them [2].
+Real photos make up the first class, while phony images
+make up the second. The gathered photos are enhanced
+with data such that they appear from every perspective
+conceivable, enabling accurate image detection from any
+viewpoint. The photos are now scaled to the same pixels,
+making it simple for the model to identify the image.
+The model is given a picture, and it accurately displays
+the model’s confidence level after determining whether the
+image is real or fake. Detecting complex manipulations in
+the images from low-level texture mismatches to high-level
+Facial structure consistencies it is very important to detect
+the minimum difference in the features of the images, and it
+is detected using the FPN and spatial domain mechanisms.
+FPN ensures the patterns of dissimilarity are detected across
+many levels, and the spatial domain directs the model to
+the areas in which the dissimilarities can be detected easily,
+so that the accuracy of detecting the fake images get easy
+and accurate. The a need for deepfake detection techniques to
+counteract possible risks since deepfake poses a serious threat
+to democracy, national security, society, and our privacy.
+Both face swapping and facial reenactment, categories for
+current deepfake generating techniques. ML techniques and
+feature-based approaches are the mainstays of deepfake
+detection techniques. Deepfake generation development and
+a shortage of high-quality datasets and benchmarks are some
+TABLE 1. List of acronyms.
+ongoing issues facing this detection. In the future, robust,
+systematic, and efficient detection techniques along with
+high-quality datasets may be the focus of deepfake detection
+[3].
+Since a deepfake image mimics the original image exactly,
+it cannot be identified as such. The data in the suggested
+model is divided into two classes: the genuine class and the
+false class. photographs of fraudulent photos are put in the
+fake class, and photographs of true images are put in the real
+class. Once the data has been gathered and trained, it may
+be used to classify actual and fraudulent images. The first
+class consists of real pictures, and the second class consists
+of fake ones. Accurate picture detection from every angle is
+made possible by adding data to the collected photographs so
+that they appear from every possible perspective. Now that
+the images are scaled to the same pixels, the model can easily
+recognize the picture. When a photo is shown to the model,
+it correctly determines whether it is a real or fake image and
+then provides the model’s confidence rating [4].
+Many techniques are being used in the form of models,
+in which identifying images or videos from real or fake is
+getting easier. The research proposed in this paper:
+• Hybrid model which can be used to get the accurate
+detection by 95%.
+• Binary classification of two major classes using data
+normalization.
+VOLUME 13, 2025 198971
+
+===== PAGE 3 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+• Utilizing Capsule networks and AUC while reducing the
+training time.
+• Suggesting an easy way to detect the deep fake images
+that uses an excellent hybrid model, which is DL
+method.
+• FPN and Spatial domain mechanisms to detect fake
+images even more accurately.
+As deepfakes involve detecting complex manipulations in
+the images from low-level texture mismatches to high-level
+Facial structure consistencies it is essential to detect the
+minimum difference in the features of the images, and it is
+detected using the FPN and the spatial domain mechanisms.
+FPN ensures the patterns of dissimilarity are detected across
+many levels, and the spatial domain directs the model to
+the areas in which the dissimilarities can be detected easily,
+so that the accuracy of detecting the fake images get easy and
+accurate [5].
+In this way, all the limitations are covered and addressed
+in this research. The images are divided into real and fake as
+they were labeled in the dataset. The data augmentation and
+data normalization steps are crucial to make the images stand
+on similar pixels and range. The literature survey talks about
+the work done by the previous research and the insights that
+this research gained from those previous studies. The further
+steps of the work are discussed in the following methodology
+section. This section talks about the architecture of the hybrid
+model and the usage of FPN and spatial domain to detect
+the minute differences of the images between real and fake.
+This section is then followed by the results section, where
+metrics and the evaluation model are discussed. Training of
+the model and its accuracy in detecting the images from fake
+and real are displayed in the form of a graph or AUC curve
+in this results section. This section is then followed by the
+conclusion section, where we discuss the final outputs of the
+model and achievements of the research [6].
+II. LITERATURE SURVEY
+Due to advancements in face forgery techniques like
+Deepfakes, Face2Face, and NeuralTextures, robust detection
+Systems are needed to identify manipulated media that could
+lead to identity theft and misinformation. Using a novel
+deepfake detection framework integrating high-level seman-
+tic information and low-level noise features. References [1]
+and [15] enable detection and localization of the manipulated
+face regions. To extract features at shallow, middle, and
+deep layers, a two-stream multi-scale model is proposed,
+which is based on an Xception network backbone. With these
+multiscale features, semantic as well as geometric Inconsis-
+tencies can be detected. The semantic map prediction module
+generates masks indicating manipulated regions, while the
+noise map prediction module models noise patterns to detect
+high-frequency artifacts. A two-step strategy mitigates over-
+fitting using FaceForensics++ datasets with cross-entropy
+loss functions. Training leverages FaceForensics++ datasets
+to maximize focus on manipulated areas. Based on extensive
+experiments, the model maintains accuracy across a range of
+video quality levels, comparable to state-of-the-art methods
+in terms of performance. Additionally, the approach provides
+detailed visual evidence of manipulation, which enhances
+interpretability and practical applicability by improving
+localization capabilities. The Xception-based model has
+high computational complexity, whereas FFA-MPDV uses
+Meso4Net for efficiency. It struggles with subtle manipula-
+tions, while FFA-MPDV’s Capsule Networks retain spatial
+details. Limited generalization to unseen data is addressed by
+FFA-MPDV’s FPN and spatial attention mechanisms.
+The technique of replacing and altering photos to make
+them look exactly like real ones is known as ‘‘deepfake.’’
+Deepfakes can bring several security and privacy issues,
+as they can create and use anything. Deepfake technology
+can worsen the situation by creating replica photos that
+could be used unethically. The study by Kang et al. [2]
+presents a deepfake detection method that enhances accuracy
+across multiple manipulation types: face-swap, puppet-
+master reenactment, and attribute-change. SRNet is applied
+to the context of identifying residual noise left by generative
+models such as autoencoders and GANs, rather than using
+widely used models such as XceptionNet. By using features
+specific to deepfake artifacts, they can detect fine signals from
+image synthesis operations. Aside from warping artifacts
+caused by misalignments in facial geometry and lighting, the
+authors also address distortions that appear around semantic
+areas like eyes, mouth, and facial boundary. They use
+facial landmarks and patch extraction to investigate these
+distortions. The authors also identified as critical are blur
+effects, which can occur during deepfake creation as a result
+of resizing and postprocessing. To enhance the detection of
+blur characteristics, they use Image Quality Measurement
+(IQM) tools like PSNR and LMSE to quantify differences
+in blur characteristics. Using landmark-based analysis and
+IQM features, their detection network robustly distinguishes
+real images from fakes by combining SRNet’s strength
+in capturing residual noise. In the study, comprehensive
+experimentation on public deepfake datasets proves that this
+novel approach outperforms existing models in terms of
+performance and stability, underscoring the importance of
+fine-grained and multifaceted feature analysis for deepfake
+detection. SRNet’s reliance on residual noise detection may
+struggle with high-quality deepfakes that minimize such
+artifacts, while FFA MPDV’s Capsule Networks capture
+spatial hierarchies for better forgery detection. The method’s
+dependence on facial landmarks and patch extraction limits
+its effectiveness against occlusions, whereas FFA-MPDV’s
+spatial attention mechanism enhances feature focus. Lastly,
+IQM-based blur detection may not generalize well to varied
+post-processing techniques, but FFA-MPDV’s FPN enables
+robust multi-scale feature extraction across different deepfake
+types.
+The spread of false video content poses severe threats
+due to its prospective to spread misinformation widely,
+impacting societal credibility and security. Tampering with
+198972 VOLUME 13, 2025
+
+===== PAGE 4 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+these videos has become a pressing concern. To address
+this, Luo and Chen [3] presented a novel approach called
+the DAFDN, which integrates two specialized attention
+modules: the SRAB and the FFAM. A supporting network
+with these modules enhances the model’s ability to detect
+warping traces and localized anomalies. The backbone
+network used in DAFDN is EfficientNet-B4, ensuring a
+more efficient and precise feature extraction process. In tests
+on DFDC and FaceForensics++, AUC scores, 91.1% and
+94.5% respectively, proving the model to be more effective
+than well-established models such as EfficientNet and
+XceptionNet. There are limitations to the design, such
+as the sensitivity to incomplete facial inputs, which can
+lead to misclassification, emphasizing the need to capture
+fine-grained details and directing attention to critical facial
+regions. However, despite this, the model demonstrates
+significant progress in detecting deepfakes in a wide variety
+of challenging situations. DAFDN’s reliance on EfficientNet-
+B4 increases computational overhead, while FFA-MPDV
+leverages Meso4Net for lightweight yet effective processing.
+Its sensitivity to Incomplete facial inputs can cause misclas-
+sifications, whereas FFA-MPDV’s Capsule Networks retain
+spatial hierarchies for robust feature learning. Additionally,
+DAFDN focuses on warping traces but may miss subtle
+texture manipulations, which FFA-MPDV’s FPN and spatial
+attention mechanisms effectively capture enhanced detection.
+Face manipulation technologies have caused a significant
+crisis in trust in society, since even unskilled eyes can’t
+distinguish deepfake videos generated through advanced
+generative models. A traditional method of forgery detection
+relying on the extraction of artifacts from the forgery
+process may not generalize when the training and testing
+datasets are mismatched, largely because supervised training
+contains a lot of redundant artifact-irrelevant information.
+Li et al. [4] presented an ADAL system to overcome these
+difficulties. It separates artifacts from unimportant data,
+increasing the accuracy of detection. ADAL architecture
+consists of an MFS inside the disentanglement generator
+to efficiently separate and transmit artifact features across
+multiple levels and improve encoder-decoder links. A new
+method, ACCL uses disentangled artifacts for creating unseen
+samples, allowing for pixel-level supervised learning of a
+more accurate estimate of the artifacts. Adal uses symmetric
+discriminators to separate images created from originals in
+both the real world and the fake world, stabilizing adversarial
+training. In contrast to traditional binary classifiers such as
+XceptionNet or EfficientNet, ADAL’s adversarial method-
+ology improves generalization and prevents overfitting. The
+framework simulates more realistic forgeries by reducing
+the number of artifacts in images, creating hard samples,
+so resilience is enhanced. Several deepfake benchmark
+datasets, including the FaceForensics++ dataset, demon-
+strate ADAL’s improved performance and transferability.
+The results demonstrate how adaptable the framework is to
+different manipulation techniques and the way it provides
+dependable visual evidence of artifacts. Using it in real-time
+or resource-constrained scenarios may be limited due to
+the computationally costly nature of adversarial training
+and disentanglement, which need significant memory and
+processing power.
+Forgery algorithms that can produce manipulated
+videos/images have developed rapidly in recent years.
+Fake information is more likely to be produced, making
+it difficult to identify. Computer vision specialists are
+increasingly focusing on detecting face forgeries as a result
+of the significant concerns raised by facial modification
+technologies. Tran et al. [5] provide MDD, a meta-learning-
+based deepfake detection technique. A lack of generalization
+leads to poor performance in unexplored domains when
+detecting face forgery. In MDD, weights are created
+for photos of faces to create a generalized model that
+can solve new, unknown domains without updating the
+model. MDD creates an efficient representation by using
+meta-weight learning to move data from the source domain
+to the target domain via meta optimization processes. They
+generate multi-domain sets for meta-train and meta-test using
+meta-splitting. To improve generalization, the model was
+updated by combining the gradients of the inner and outer
+loops. To determine backpropagation, gradient descent was
+calculated. Pair attention loss and average-center alignment
+loss were added, which greatly enhanced the system’s
+detection performance.
+With CVD-CV23-1, the MDD has improved the AUC
+performance from 58.2% to 70.8%, with CVD-CV23-
+3, from 67.2% to 78.8%, and with CVD-CV23-3, from
+71.7% to 82.1%. When compared to FT-Base on AUC, the
+MDD method yields better results in CID-DF23 (90.3% to
+93.1%), CID-DF40 (74.2% to 77.7%), CID-FF23 (79.2%
+to 82.1%), CID-FS23 (57.9% to 65.8%), CID-FS40 (60.9%
+to 68.1%), CID-NT23 (76.4% to 79.1%), and CID-NT40
+(61.8% to 62.1%). ACC has improved from 83.2% to 86.1%.
+After that, the loss drops from 84% to 78%. This illustrates
+how the block shuffling modification enhances the model’s
+functionality. Li et al. [6] present a DeepFakes forensics tech-
+nique dubbed forensic symmetry for determining whether
+two symmetrical face patches share similar or different
+natural features. This is accomplished by combining two
+feature extractors into a multi-stream learning framework.
+The first extractor uses the front-facing images to obtain
+information about symmetry. The second feature extractor
+obtains information about similarity from side face photos.
+The term ‘‘natural feature’’ refers to an image that exhibits
+symmetry and resemblance. By mapping them into the
+angular hyperspace, the forensic symmetry system measures
+the difference between symmetrical face patches in that
+space. A face image that has a greater difference in natural
+features is more likely to be tampered with. They assessed the
+efficacy of the suggested forensic symmetry system by using
+a heuristic prediction algorithm to determine if DeepFakes
+were involved in video tampering. It is possible to success-
+fully identify re-compression detection, homology detection,
+and heterogeneity detection using DeepFakes’ methods. The
+VOLUME 13, 2025 198973
+
+===== PAGE 5 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+DF TIMIT dataset achieved 95.99% image-level accuracy
+and 99.43% video-level accuracy in homologous detection,
+while the Celeb-DF dataset achieved 71.69% image-level
+accuracy and 79.28% video-level accuracy. The AUC for
+the FF++, DF, and Celeb-DF models in heterogeneous
+detection was 73.16% at the image level and 78.88% at
+the video level. The forensic symmetry method relies on
+symmetrical face patches, making it less effective against
+non-frontal or occluded faces, whereas FFA-MPDV’s spatial
+attention mechanism ensures robust detection across varied
+facial orientations. Its performance drops significantly on
+the Celeb-DF dataset, indicating weaker generalization,
+while FFA-MPDV’s Feature Pyramid Networks enhance
+adaptability to diverse deepfake styles. Additionally, heuristic
+prediction may introduce biases, but FFA-MPDV’s Capsule
+Networks retain spatial hierarchies for more reliable and
+fine-grained forgery detection.
+Recent social media posts have featured edited videos
+based on DeepFake, raising doubts about the veracity of
+video content and the security of individual privacy. Even
+though current DeepFake detection techniques perform well
+in certain situations, they typically fail to detect hidden
+manipulation techniques. Creating dynamic information that
+demonstrates facial features in motion without visual or
+statistical traces is more challenging than creating static
+information, such as the face of an individual. To improve
+generalization capacity, this can be achieved by analyz-
+ing dynamic information through a CDIN proposed by
+Wang et al. [7]. By constructing appropriate network
+branches, they examine both global and local dynamics
+(the entire face) and communicate their feature maps at
+different levels via a recently proposed CCDFM. DeepFake
+detection methods are based on analyses of mouth regions
+and are inspired by this approach. In addition to learning
+more about the global context through CCDFM, the global
+branch, focuses on unusual mouth movements. A multi-task
+learning plan is implemented for optimizing the network
+by combining local and global information. As a result of
+tests, their method outperforms several SOTA techniques
+in terms of detection, especially when detecting video
+forgeries that were altered by unseen methods. In the LRM-
+Branch the I3D has great accuracy in cross-dataset on
+FF++, Celeb-DF, DFDC i.e.; 98.5%, 74.9%, 70.1%. The
+timeSformer in GAD-Branch has 98.9% accuracy on FF++,
+85.8% accuracy on Celeb-DF, 71.2% accuracy on DFDC.
+The GAD+LRM+MG+CAM achieved 98.5% accuracy on
+FF++, 89.1% accuracy on Celeb-DF, 78.4% accuracy on
+DFDC on cross dataset, but the average of Intra dataset
+is high, i.e., 97%. At the video level, the proposed model
+achieves 99.99% AUC.
+eKYC systems, also known as remote identity-proofing
+systems, are challenged in their dependability by the develop-
+ment of deepfake-generating tools. These tools allow you to
+produce phony videos that are obscured by facial recognition
+software and hard to identify using existing deepfake detec-
+tion techniques. Since eKYC Systems require specialized
+motions, such as head movement, for liveness identification.
+Existing deepfake datasets are not well-suited to create and
+test eKYC systems since they require specialized motions,
+such as head movement. They also lack processes for
+evaluating facial verification and identifying information,
+both of which are critical components of eKYC. They
+discovered that deepfakes are incapable of being detected by
+eKYC methods. Therefore, [8] Felouat et al. can produce
+a substantial collection of excellent fictitious films (over
+228,000 videos) with a diverse representation of age, gender,
+and ethnicity, as well as matching facial images. The movies
+are perfect for developing and evaluating a broad range of
+eKYC system-related tasks since they feature a diversity of
+head movements and facial expressions. Additionally, offer
+procedures for facial verification and traditional deepfake
+detection, which are frequently employed in electronic
+KYC systems. Until now, no comprehensive assessment
+of face recognition systems has been conducted. The face
+recognition model accuracy and AUC on ArcFace using
+eKYC-DF dataset is highest in C0 and it 96.2% accuracy and
+98.7% AUC, on the Facenet model using eKYC-DF dataset
+is highest in C0 and it 92.1% accuracy and 96.4% AUC.
+Similarly, C0 has achieved the highest accuracy and AUC in
+the Facenet512 and Deepface models.
+Since deep forgery technology has advanced significantly,
+media content has become less credible, making the detection
+of deep forgeries a crucial part of ensuring media security.
+Although research on deepfake detection techniques has
+advanced quickly, existing methods mostly concentrate on
+detecting and identifying artifacts. As deep forgeries tech-
+nology advances, high-quality synthetic images and those
+created using reconstruction techniques have grown more
+complex, making it harder to identify traces and artifacts.
+Using deep neural networks and fine-grained artifact features,
+Liu et al. [9] develop a deep forgery detection method to
+address this issue. By converting facial colors, frequency
+domains, and deforming and blurring facial masks, proposed
+method simulates diverse facial synthesis data. As a result,
+different synthesis strategies can be detected by training
+the deepfake detection model. Fine-grained artifact features
+ensure stability when training the classifier model with
+numerous perturbations of real images. Based on the results
+of the FF++ and WildDeepfake datasets, demonstrate that
+approach is effective and adaptable for detecting deep
+forgeries. The dataset AUC on FF++ is 97.9% for JPEG
+compression and 96.90% for Gaussian noise, on DFD dataset
+is 99.3%, on the Celeb-DF dataset is 94.25%, and on DFDC
+89.2% and on the WildDeepfake dataset is 89.78%.
+The term ‘‘deepfake’’ refers to a system that employs
+artificial intelligence and deep learning to produce phony
+images, audio, and movies from real ones. Using this
+technique, medical images can be altered. Hospital operations
+may be disrupted if medical personnel can make false
+diagnoses through the manipulation of medical imagery. Due
+to these disruptions, hospitals may face serious financial
+and potentially fatal issues. This work is developing a deep
+198974 VOLUME 13, 2025
+
+===== PAGE 6 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+learning-based approach to detect altered medical photos.
+Mehmet et al. [10] suggest that a pair of separate datasets
+containing knee osteoarthritis x-rays and lung CT scans is
+first created. To standardize and vary data, preprocessing
+and augmentation techniques are used. The datasets classify
+cases as either authentic or fraudulent. These datasets
+were used to test the deep fake detection capabilities
+of the Y oloV3, Y oloV5nu, Y oloV5su, Y oloV8n, Y oloV8s,
+Y oloV8m, Y oloV8l, and Y oloV8x models. The ability of all
+YOLO models to differentiate between knee osteoarthritis
+X-ray pictures were nearly perfect. In lung CT scan images,
+the Y oloV5 models produced the best and worst results,
+whereas the Y oloV8 models fared well overall. ‘‘ Y oloV5su
+received a recall score of 0.997, whilst Y oloV5nu received a
+recall value of 0.91. Additionally, the top model (Y oloV5su)
+outperforms the second-best model (Y oloV8x) by 60%.
+According to the findings, Y oloV5su can be used for fast
+and accurate identification of medical deep fakes. CNN+RC,
+an ensemble-based architecture, observed a 90% relative
+increase in accuracy values in the images they detected
+using the raw images. Achieved a result accuracy of 97.2%
+with the combination of DenseNet201 and one-way RC.
+As a result of tamper detection classification for localized
+tumor regions and nodule locations in the second dataset
+they used in their evaluation, they achieved a 92.4% relative
+accuracy increase over DenseNet121-based classification
+for single localized images from the DenseNet121 and
+RC-based combination. In face forgery detection, artificial
+intelligence is used to detect manipulated or changed facial
+photos or videos. Although high-quality videos are easily
+recognized with current recognition techniques, social media
+is frequently compresses videos into low-quality codecs used
+in everyday applications. As a result of their low resolution,
+fuzzy details, and noise, these photos and movies are
+difficult to detect. This problem is addressed through MDCF-
+Net, Zhou et al. [11] put forth a multiscale dual-branch
+network for compressed face forgery which efficiently
+extracts forging features from compressed facial pictures
+in multiple compression levels. A two-branch MDCF-Net
+is present: an RGB-domain branch that uses Transformers
+to extract fine texture information from RGB photos at
+multiple scales, and a frequency-domain branch that extracts
+global spectral information and identifies artifacts in low-
+quality images. As a result of comprehensive comparison
+tests using public datasets such as FaceForensic++, Celeb-
+DF, and WildDeepfake, MDCF-Net consistently outperforms
+other methods when it comes to identifying forged images
+and videos, especially on the FaceForensic++ low-quality
+dataset, where MDCF-Net achieves state-of-the-art perfor-
+mance. The MDCF-Net achieved 99.81% accuracy on DF
+method, 99.67% accuracy on F2F method, 99.65% on FS
+method and 97.83% on NT method when compared to FF++
+(HQ). The MDCF-Net achieved 98.66% accuracy on DF
+method, 97.92% accuracy on F2F method, 98.87% on FS
+method and 92.67% on NT method when compared to FF++
+(LQ). The proposed method achieved 99.65% accuracy on
+the Celeb-DF dataset and 86.39% accuracy on W-DF dataset.
+MDCF-Net’s reliance on Transformers increases computa-
+tional complexity, making real-time detection challenging,
+while FFA-MPDV leverages Meso4Net for efficiency. Its
+frequency-domain branch may struggle with high-quality
+deepfakes that lack strong spectral artifacts, whereas FFA-
+MPDV’s Capsule Networks capture fine spatial hierarchies.
+Additionally, performance drops on WildDeepfake (86.39%
+accuracy) indicate weaker generalization, but FFA-MPDV’s
+FPN and spatial attention mechanisms ensure robust detec-
+tion across diverse datasets.
+By training and testing on an in-distribution dataset,
+deepfake detection techniques can detect forgeries inside a
+given dataset. When given unseen samples, however, their
+performance sharply declines. For a deepfake detection sys-
+tem to ensure generalizable detection performance, it must be
+indifferent to the types, look, and quality of forgeries. Cross-
+dataset generalization is still a difficult problem despite many
+efforts to improve it, particularly when tested against typical
+post-processing perturbations like blur or video compression.
+In this study, Khormali and Y uan [12] propose a deepfake
+detection framework based on a self-supervised pretraining
+model that is capable of delivering exceptional generaliza-
+tion, withstands common corruptions and is easy to explain.
+It is composed of a transformer discriminator-equipped
+graph convolution network, a feature extractor trained using
+the vision Transformer architecture through self-supervised
+contrastive learning, and a graph A transformer relevance
+map that offers a more thorough explanation of the model’s
+choice and a clearer picture of the manipulated regions. They
+evaluate the effectiveness of the framework by using a variety
+of difficult tests, such as robustness against typical post-
+production perturbations, cross-database generalization and
+in-data distribution. According to the results, the proposed
+deepfake detection framework outperforms the state-of-the-
+art techniques. The AUC of the suggested method was
+99.9% on FF++, 99.4% on Celeb-DF(V2), and 81.3% on
+WideDeepfake.
+Artificial intelligence and advanced technology blur the
+distinction between actual and modified images, even though
+human brains are capable of recognizing face characteristics.
+With the development of digital editing applications, it has
+become harder to distinguish between real and fake faces
+because they are so lifelike. Consequently, techniques such
+as deep learning are becoming increasingly popular for sepa-
+rating real and artificial faces. The purpose of this paper is to
+present the development of a pioneering hybrid deep learning
+model for detecting fake faces, which Safwat, [13], [16]
+combine the capabilities of Generative Adversarial Networks
+(GANs) and Residual Neural Networks (RESNETs). In this
+model, the generative strength of GANs is integrated with
+RESNET’s discriminative abilities, offering a novel way to
+distinguish natural faces from artificial ones. An evaluation
+of the hybrid model’s performance compared to pre-trained
+models like VGG16 and RESNET 50 is conducted. The
+hybrid model outperforms established pre-trained models in
+VOLUME 13, 2025 198975
+
+===== PAGE 7 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+detecting fake faces more accurately, marking a significant
+advance in facial image authentication and recognition.
+Based on a benchmark dataset, the proposed model achieves
+outstanding performance measures, such as 0.79 accuracy,
+0.88 precision, 0.83 F1-score, 0.83 accuracy, and 0.82 AUC
+score on the ROC. Several aspects of the hybrid model’s
+performance, especially when it comes to accuracy, precision,
+and memory efficiency, are highlighted in the study’s conclu-
+sions. As a result of combining GAN generative capabilities
+with RESNET discriminative capabilities, this solves the
+problems arising from more complex fake face generation
+techniques. A significant benefit of the study is that it
+can be applied to identity verification, social media content
+moderation, cybersecurity, and other areas. It is crucial that
+they can distinguish between real and altered faces accurately
+in these situations. Through the use of Channel-Wise
+Attention Mechanisms, they improve RESNET50’s efficacy
+and overall efficiency. The GAN ResNet hybrid model’s
+reliance on generative training may lead to overfitting on
+specific fake patterns, while FFA MPDV’s Capsule Networks
+enhance generalization by capturing spatial hierarchies. Its
+accuracy (0.79) and AUC (0.82) remain lower than state-
+of-the-art models, whereas FFA-MPDV achieves 97.3%
+accuracy with superior feature extraction. Additionally, the
+model’s memory-intensive architecture limits scalability, but
+FFA-MPDV’s Meso4Net and FPN ensures lightweight and
+efficient deepfake detection [17].
+The deepfake technique of face swapping and face
+reenactment enables the transfer of the appearance and
+behavior of a face from one video image to another video
+image. In recent years, deepfake technology has developed
+rapidly due to advances in deep learning techniques, resulting
+in increasingly realistic effects. Therefore, a growing number
+of researchers are studying deepfake detection. However,
+most existing studies on deepfake detection are primarily
+limited to binary classification of real and fake images,
+rather than identifying different methods in an open-world
+scenario, so in practice, they fail to detect unknown deepfake
+categories. For fine-grained open-set deepfake detection,
+Zhou et al. [14] suggest an unsupervised domain adaptation
+method. To build the capacity to recognize various deepfake
+approaches in the source domain, their method first employs
+labeled data from the source domain for model pre-training.
+As a result, the method clusters unlabeled images in the target
+domain using an NMAC approach. As the adaptive clustering
+results are matched to the known deepfake categories in
+the source domain, a PLG is used to create virtual class
+labels for unknown deepfake categories. To improve the
+generalization ability of the multi-class deepfake detection
+model to the unknown deepfake classes presented in the
+target domain, retrain the model with labeled and pseudo
+labeled data of the source domain and target domain. Using
+three deepfake datasets (ForgerNet, FaceForensics++, and
+FakeA VCeleb), the proposed method has been tested under
+multiple open-set fine-grained deepfake detection tasks.
+Compared with state-of-the-art methods, it achieves better
+domain generalization and delivers promising results in
+fine grained open-set deepfake detection. The Protocol-1
+accuracies for the intra-dataset testing accuracy range around
+90-93%, with marginal improvements of 1-2%. The cross
+dataset testing accuracy for protocol-2 is between 85 89% and
+with novel deepfake methods is between 81-86% and with
+partially consistent data for protocol-4 is between 83- 88%.
+III. METHODOLOGY
+Here, the working process of the proposed method is
+explained in detail. The proposed method consists of different
+phases namely and each phase has its own unique work.
+Overview of the Dataset
+The dataset has been collected from Kaggle, and it is
+divided into three parts: training, testing, and validation
+datasets, containing a total of 190,335 images split into
+two classes for binary classification: 95,134 Fake/Generated
+Images and 95,201 Real/Authentic Images. These datasets
+are loaded from their directories. The training images used
+contain 70,001 Fake images and 70,001 Real images, test
+images contains 5,492 Fake and 5,413 Real images, and the
+validation images contain 19,641 Fake images and 19,787
+Real images [7].
+The dataset used in this study is a subset of the DFDC
+dataset, which is one of the largest and most diverse publicly
+available datasets for deepfake research. It contains thousands
+of videos with real and manipulated content. To prepare
+our dataset, we extracted keyframes from the videos and
+labeled them accordingly as real or fake images. The fake
+images in DFDC were generated using a variety of deepfake
+generation techniques, including autoencoder-based face-
+swapping and GANs, which makes them representative of
+real-world deepfake scenarios.
+Although other datasets such as FaceForensics++, Celeb-
+DF, and DeeperForensics [18] are popular in deepfake
+detection research, they often focus on specific manipulation
+methods or include limited diversity in actors, environments,
+and lighting conditions. In contrast, DFDC provides a richer
+set of variations in terms of identities, facial expressions, and
+background scenes, offering a better benchmark for training
+models with improved generalization. Therefore, DFDC was
+selected for this work to ensure robustness against multiple
+synthesis methods and realistic variations found in practical
+applications.
+The dataset may still introduce biases or class imbalances
+even when the total number of Fake and Real photos is almost
+equal. Overfitting or underfitting could result from the model
+favoring the more frequent class due to the small variations
+in image counts across the training, testing, and validation
+sets. Furthermore, the distribution of the dataset might not
+match actual data, which would impair the generalization of
+the model. Biases in class representation or image collecting
+may further distort feature extraction, which would affect
+the model’s functionality. These elements draw attention
+to the possible imbalance problem that can impede precise
+classification.
+198976 VOLUME 13, 2025
+
+===== PAGE 8 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+FIGURE 1. Training sample of fake images.
+FIGURE 2. Training sample of real images.
+There are two primary classes in the dataset:
+Class 0: Artificially created deepfake images [Fig.1]
+Class 1: Authentic, real images [Fig.2]
+A. DATA PREPROCESSING
+A necessary step in ML as it cleans the data and handles the
+imbalanced data to get accurate results. Proper preprocessed
+FIGURE 3. Pie chart of class distribution.
+data is only suitable for analysis and training as the model
+learns effectively. The steps involved are:
+1) DATA CLEANING
+Eliminate Duplicates along with Corrupted Files: V erify that
+the dataset is free of duplicate photos and corrupted files.
+Duplicate frames and incomplete files are eliminated using
+automated routines [19].
+2) DATA NORMALIZATION
+Batch Normalization for a scale of 0-1 was applied to the
+raw pixel values (0-255) to optimize them for deep learning
+models. A rescaling factor of 1/255 was applied to The
+ImageDataGenerator from Keras. This increases the model’s
+performance by ensuring that the input values are on the same
+scale, which reduces the likelihood of gradients disappearing
+or exploding during training [20].
+BN(x) = x − µ
+√
+σ 2 + ϵ
+· γ + β (1)
+xnorm = xpixel
+255 (2)
+3) IMAGE PREPROCESSING
+There are subdirectories with names associated with specific
+classes for the images. As a result of its compatibility with
+The Keras ImageDataGenerator, this directory architecture
+facilitates the batch processing of images and the labeling
+of pictures for training purposes. This Image data generator
+improve generalization and reduce over-fitting as the images
+gets augmented like horizontal flipping when applied data
+generator. Image preprocessing involved scaling each picture
+to 256 by 256 pixels and using three RGB color channels.
+As a result, the input size remains constant across the dataset,
+ensuring the model processes the images correctly [21].
+Resized Image = Resize(Image, 256, 256) (3)
+By ensuring that all features are on the same scale,
+normalizing pixel values facilitates faster and more efficient
+VOLUME 13, 2025 198977
+
+===== PAGE 9 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+convergence of optimization algorithms like Adam. In the
+absence of this normalization, the model might have trouble
+handling features with significant scale differences, which
+could result in subpar performance or sluggish convergence.
+The class distribution of the train datasets is given in Fig.3
+4) DATA AUGMENTATION
+To enhance model generalization and avoid overfitting in
+DL, data augmentation is crucial, especially when the
+dataset is limited. In this case, real-time augmentation
+was applied throughout the training phase using Keras’
+ImageDataGenerator. Common methods of augmentation
+consists of:
+1) Flipping something horizontally arbitrary turning Flip-
+ping an image horizontally simulates variations of the same
+object (e.g., faces or other objects) in different orientations.
+This teaches the model to be invariant to horizontal posi-
+tioning and reduces the model’s reliance on specific spatial
+orientations. The model doesn’t learn to depend on the left-to-
+right structure of an image but learns more general features.
+If the model sees the same image but flipped horizontally,
+it forces the model to learn more robust features that aren’t
+overly dependent on specific object positions, reducing the
+chance of overfitting.
+xaug = FlipH (x) (4)
+2) Shearing and Zooming, Shifting (height/width) By
+zooming and shearing into the image, the model learns to
+recognize the object at various scales. This helps the model
+generalize better to objects of different sizes and prevent
+it from overfitting to the specific size of objects in the
+training set. They cause the model to focus more on the
+key features of the object, rather than memorizing a fixed
+background patterns or object sizes, thus improving its ability
+to generalize. [x′
+y′
+]
+=
+[ 10
+shear_factor
+][ x
+y
+]
+(5)
+xaug = Zoom(x, Zoom_factor) (6)
+By following these methods, the images are ready to be
+predicted accurately from any angle of the input image. The
+dataset contains various angles of images with fake or real
+labels [22].
+B. MODEL ARCHITECTURE
+The proposed model, Facial Feature Analysis and Minia-
+ture Pattern Dissimilarity V erification model (FFA-MPDV),
+provides a robust solution to deepfake detection using the
+advanced Deep neural network architectures and techniques.
+FFA-MPDV combines the Meso4Net architecture designed
+for lightweight and efficient feature extraction with Capsule
+Networks, which are more flexible in learning spatial
+hierarchies of spatial relationships between facial features.
+To capture the feature of image manipulations on fine-grained
+details and global structures, we introduce Feature Pyramid
+Networks (FPN) for multi-scale feature extraction [23].
+FIGURE 4. Flowchart of methodology.
+It utilizes a spatial attention mechanism to enhance the
+important regions of an image, which aids in improving
+accuracy during detection. Using an optimizer like Adam and
+a loss function like mean squared error, the model is trained
+with the Kaggle dataset to distinguish between real and false
+photos. The model must be able to recognize all picture
+differences and assess facial features, such as facial textures,
+expressions, and characteristics, that other CNN models are
+unable to identify, distinguishing between genuine and forged
+photos. CNNs are replaced with capsule networks, which are
+made up of clusters of neurons known as capsules. CNNs
+solely focus on low-level aspects, while capsule networks
+compare the high-level and low-level aspects of images and
+determine which are authentic and which are not. While the
+capsule network levels provide a vector as an output that
+illustrates the spatial and hierarchical relationships between
+different features in an image, the CNN neural network layer
+provides a scalar value as an output that indicates feature
+detection. While preserving spatial linkages, the capsule
+networks exhibit hierarchical patterns [24].
+1) Meso4Net ARCHITECTURE
+A DL-based method called MesoNet was created to effec-
+tively detect face alteration in the media. The identification
+of hyper-realistic counterfeit media is its primary focus.
+Because of compression, which severely deteriorates the
+data, traditional picture forensics methods frequently fail
+with movies. MesoNet offers a deep learning model with a
+good classification rate that concentrates on the meso-level
+characteristics of images as a solution. MesoNet is made up of
+198978 VOLUME 13, 2025
+
+===== PAGE 10 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+two networks: Meso-4 and MesoInception-4. Both networks
+have a few layers and are designed for analyzing mesoscopic
+properties to detect forgeries. Meso-4 begins with a dense
+network with one hidden layer after four layers of pooling
+and convolutions [25].
+Dropouts are used to increase resilience in fully connected
+layers, while convolutional layers regularize their output and
+avoid the vanishing gradient effect using ReLU activation
+functions and batch normalization. 27,977 trainable parame-
+ters are available [Table 2]. The proposed model implements
+a four-layer setup of the meso4net, which processes the
+information using input photos. The first layer is of eight
+3 × 3 filters, which are activated with sigmoid functions, and
+the second layer contains spatial dimensions of feature maps
+decreased by a max pool layer, which is 2 × 2. The second
+layer contains eight 5 × 5 filters, which are activated with a
+sigmoid function and a max pool layer. Here, because of this
+vast availability of layers, the relevant data remains [26].
+2) FPN FOR MULTI-SCALE FEATURE EXTRACTION
+Using the FPN, images can be extracted at any scale at a
+multi-scale level. The goal is to identify areas that are real
+and fake based on the spatial hierarchies and patterns in input
+images, improving the model’s accuracy in tasks like deep
+fake detection. As these images contain various scales of
+features, multi-scale features are extracted from the input
+images. Low-level features are captured by convolutional
+layers, whereas higher-level features are captured by deeper
+layers. Input is processed by three different convolutional
+layers, each of which fetches features at a different scale.
+A convolution of 1 × 1 captures local features at a shallow
+depth while a convolution of 3× 3 detects features at medium
+and deeper levels [27].
+As a result of feature extraction, deeper layers produce
+feature maps, and FPN counteracts the loss of spatial
+resolution by unsampling the feature maps to their
+spatial dimensions, which allows high-level and low-level
+spatial information to merge. After resizing the feature maps
+to dimensions, element-wise addition is used to combine
+them together. By combining low-level and high-resolution
+features, this step preserves detailed spatial information from
+previous layers, increasing semantic richness. With the use
+of FPN in the model, we can detect global manipulations and
+fine-grained local changes to make the recognition of real
+versus fake images more reliable [28].
+3) SPATIAL ATTENTION MECHANISM
+The spatial attention mechanism enhances the ability of the
+model to focus on regions that are most relevant to feature
+maps after multi-scale feature extraction, that are achieved
+through FPN. FFA-MPDV primarily focuses on the relevant
+feature maps and their regions to detect deep fake images.
+This mechanism gives importance to critical regions where
+the detection of the images can be done accurately.
+MaxPool(X ) = max
+i,j
+Xij (7)
+FIGURE 5. Workflow diagram of methodology.
+The spatial attention mechanism relies on two types of
+global pooling operations. The first one is global average
+pooling, which estimates the average value of all spatial
+locations of each channel in a feature map. This helps in
+understanding which areas have high or low activation [29].
+AvgPool(X) = 1
+H · W
+H∑
+i=1
+W∑
+j=1
+Xij (8)
+The global max pooling is the second one that functions
+the maximum value, which is calculated by taking all spatial
+locations of every channel in a feature map. This gives the
+VOLUME 13, 2025 198979
+
+===== PAGE 11 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+salient features that can help in detecting the areas with
+the strongest activations. A single value of the channel is
+taken in both GAP and GMP . By using this technique, the
+model can detect the differences between the images more
+efficiently [30].
+Attention = σ (Conv (concat (AvgPool,MaxPool))) (9)
+Overview of the Dataset
+An overview of how two distinct models were combined
+to create a hybrid model is presented in this section.
+Although Vision Transformers (ViTs) are very good
+at capturing global contextual linkages and long-range
+dependencies in an image, their training requires much more
+processing power and much larger datasets. Meso4Net was
+selected, on the other hand, due to its lightweight architec-
+ture, which makes it very effective for deepfake detection
+without requiring a lot of data augmentation. Meso4Net
+also concentrates on mesoscopic properties, which are
+essential for identifying nuanced forgeries, while ViTs mostly
+use self-attention methods, which could miss fine-grained
+local artifacts. Furthermore, the model’s resilience against
+adversarial assaults and deepfake manipulation techniques is
+increased by combining Meso4Net with Capsule Networks,
+which offer hierarchical spatial relationships that ViTs do not.
+Capsule Networks (Caps Nets) for Deep Fake Detection
+and Deep Learning
+One kind of ANN that may be used to more accurately
+model hierarchical relationships is the capsule neural network
+(CapsNet), a machine learning system. The strategy aims
+to more nearly resemble the structure of actual neurons.
+The concept involves incorporating ‘‘capsules’’ into a CNN
+and reusing the output from many capsules to create
+representations for higher capsules that are more stable
+(relative to different perturbations). The result is a vector that
+includes the pose for the observation as well as the probability
+of the observation. This vector is comparable to what CNNs
+perform, for instance, when classifying data with localization
+[31].
+A capsule is a collection of neurons that fire separately in
+response to different aspects of an item type, like size, color,
+and position. A set of neurons that collectively generate an
+activity vector with a single element for each neuron to store
+that neuron’s instantiation value (such as color) is formally
+referred to as a capsule. Graphics programs draw objects
+using instantiation values. These are what Capsnets try to
+get from their input. The length of the vector represents the
+likelihood that the item would appear in a given input, and
+the direction of the vector measures the characteristics of the
+capsule [32].
+Throughout the routing process, Softmax is used to
+calculate coupling coefficients, which measure the contri-
+bution each lower-level capsule makes to the higher-level
+capsules. In particular, we normalize these coefficients by
+adding Softmax to the routing logits so they add up to
+1. By ‘‘routing’’ information between capsule layers, this
+normalization allows the model to maintain spatial and
+FIGURE 6. Capsule network architecture.
+hierarchical links while concentrating on the most relevant
+capsule activates [Fig.5]. The Softmax network focuses its
+attention on capsules that best reflect the underlying structure
+of the input by tuning these coefficients across multiple
+routing cycles. As part of the Routing Layer, coupling
+coefficients are calculated using Softmax to determine the
+degrees to which lower-level capsules contribute to higher-
+level capsules. It is necessary to use Softmax across the
+routing logits to normalize these coefficients and ensure they
+equal 1. By essentially routing information between capsule
+layers while preserving spatial and hierarchical links, this
+normalization allows the model to focus on the most pertinent
+capsule activations while creating complex representations.
+The network uses Softmax to dynamically direct attention
+to capsules that show the input’s underlying structure most
+accurately throughout the routing process [33].
+Cij = ebij
+∑
+k
+ebik
+(10)
+The formula is used to find the probability that capsule i
+should be coupled to capsule j by applying the softmax to b,
+the coupling logits.
+Typically, artificial neurons produce a scalar, real-valued
+activation that approximates the likelihood of an observa-
+tion. Capsnets use vector-output capsules and max-pooling
+with routing-by-agreement in place of scalar-output feature
+detectors. The likelihood of accurate detection is significantly
+increased when several capsules agree because they are inde-
+pendent. Only rarely in a million trials will a minimal cluster
+of two capsules, taking into account a six-dimensional entity,
+agree within 10% by chance. The probability of a random
+agreement across a larger cluster with more dimensions falls
+exponentially with the number of dimensions [34].
+Deepfake Detection Using Capsule Networks
+Given how quickly AI is developing, models should be
+able to identify if a deepfake image is real or fake in a
+matter of seconds. Traditional, conventional CNNs won’t
+198980 VOLUME 13, 2025
+
+===== PAGE 12 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+help overcome forgery scenarios. When a picture is supplied
+as input, the model needs to recognize differences in it
+right away. Capturing fine-grained features is a unique
+alternative for capsule networks. This enables the model to
+identify even the smallest variations in characteristics when
+the image is changed. Its ability to discern spatial hier-
+archies improves detection accuracy, ensuring appropriate
+outcomes [35].
+Less Data Needed: It is difficult to obtain large labeled
+datasets in the deepfake detection space, so Caps Nets’ ability
+to learn spatial correlations with less data gives them a key
+advantage over CNNs.
+Enhanced Generalization: As deepfakes are produced
+using a wide range of methodologies (GANs, autoencoders,
+etc.), Caps Nets are an effective weapon when it comes
+to fighting deepfake technologies due to their ability to
+generalize to many transformations and manipulations.
+By being able to generalize across a wide range of bogus
+content versions, detection algorithms become more reliable.
+Meso4 Architecture
+As shown in the flowchart [Fig.4], a CNN suited for
+binary classification applications, the Meso4 architecture is
+lightweight and was employed. Because Meso4’s efficiency
+and low processing overhead make it suitable for forgery
+detection applications, Deepfake detection is among them.
+With this design, spatial features are captured in pictures
+while avoiding overparameterization, which can lead to
+overfitting.
+Layer of Input
+An image tensor of the shape (256, 256, 3), repre-
+senting the RGB color channels, width, and height, was
+used by Meso4 network as input. The input dimension
+was selected to maximize computation efficiency while
+capturing sufficient visual detail. This dimension was chosen
+as an input dimension to maximize the computational
+efficiency of the photograph, while maintaining sufficient
+resolution to capture significant visual elements. Prior
+to entering the network, the images were normalized
+to [0, 1].
+Layers of Convolution
+In this section, each layer of the meso4 net is discussed in
+detail below:
+Conv1: The first layer contains eight 3 × 3 filters with
+a sigmoid activation function. As it gives an equal balance
+in conserving computational efficiency and collecting spatial
+features locally, the 3 × 3 filters are used in CNN. The
+2 × 2 max pool layer is decreased to half to reduce the spatial
+dimension.
+Conv2: As with Conv1, the second convolution layer has
+eight 5 × 5 filters followed by sigmoid activation. The larger
+filter size may allow for the capture of more complex spatial
+relationships [36].
+Conv3: The third convolutional layer received sixteen
+filters, each with a 5 × 5 filter size. This increase in filter
+count allows for more comprehensive feature extraction as
+the network grows. A (2 × 2) max-pooling layer came next.
+Conv4: The fourth convolutional layer employed a broader
+max-pooling operation of size (4 × 4) to summarize feature
+maps for subsequently fully connected layers and maintain
+16 filters while further reducing spatial resolution.
+Down-sampling the convolutional layers with strides
+of 2 reduces the spatial resolution of feature maps by
+maintaining essential information. This step reduces the
+dimensionality of data that is being taken, making the model
+more efficient, and it also focuses on larger, more patterns,
+making the model easier to recognize the high-level feature
+in various scales.
+Conv(X) = (X ∗ W ) + b (11)
+where X(input), W(weight filter), b(bias), and * represent
+convolution. It is used to extract local spatial features by
+applying filters to the input image.
+Completely Networked Layer
+After passing through convolutional layers, the output
+feature maps were flattened into a 1-dimensional vector.
+This dense layer had 16 units and a sigmoid activation
+function. Sigmoid was selected over RELU since it can avoid
+problems with dying neurons during training, particularly
+when gradients are zero or almost zero.
+Regularization of Dropouts
+To lessen overfitting, a dropout layer was added after the
+completely linked layer. The fully coupled layer’s neurons
+are randomly silenced when dropout is applied on every
+forward pass at a rate of 0.5. The method prevents neurons
+from becoming overly dependent on specific pathways,
+which allows the network to develop more robust represen-
+tations [8].
+Output Layer
+A single neuron with a sigmoid activation curve constituted
+the last output layer. Based on the sigmoid function,
+a probability value in the interval [0, 1] indicates the
+probability that the input is associated with the ‘‘real’’
+class ( complementary probability corresponds to a ‘‘fake’’
+class). The model learns to distinguish the two groups using
+attributes from previous layers, which is common for binary
+classification problems
+Sigmoid(x) = 1
+1 + e−x (12)
+Sigmoid function converts logits to a probability between
+0 and 1, useful for binary classification.
+Model compilation
+Its efficacy and ability to handle sparse gradients, espe-
+cially in noisy or non-stationary cases, made Adam an ideal
+choice for a variety of scenarios. With the Adam optimizer,
+a stochastic gradient descent version that adjusts the learning
+rate based on first- and second-order gradient estimates,
+the neural network model was constructed. Several deep
+learning tasks have been demonstrated to offer a decent
+compromise between stability and rapid convergence by
+VOLUME 13, 2025 198981
+
+===== PAGE 13 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+FIGURE 7. Architecture of FFA-MPDV.
+choosing a learning rate of 0.001.
+mt = β1mt−1 + (1 − β1)∇θ J (θ)2 (13)
+vt = β2vt−1 + (1 − β2)∇θ J (θ )2 (14)
+θt = θt−1 − α mt
+√vt + ϵ (15)
+where α is the learning rate, m and v are the first and second
+moment estimates, and β1, β2 are hyperparameters.
+Equation 13 – First moment estimate (biased mean of
+gradients):
+This computes an exponentially weighted moving average
+of past gradients. β1 controls how much past gradients
+influence the current estimate. It helps smooth out noisy
+gradients for stable updates.
+Equation 14 – Second Moment Estimate (V ariance Term):
+This computes an exponentially weighted moving average
+of squared gradients. β2 determines how much past squared
+gradients affect the estimate. It adjusts learning rates based
+on gradient magnitudes to prevent large updates.
+Equation 15 – Parameter Update Rule:
+The parameter is updated using the scaled first moment.
+The denominator normalizes the update using the second
+moment for adaptive learning rates. α is the learning rate, and
+ϵ prevents division by zero.
+As the loss function, we used MSE, which is the average
+of squared differences between predicted and actual target
+values. MSE, especially useful for regression problems
+since it penalizes greater errors more severely than smaller
+TABLE 2. Model parameters breakdown.
+ones. Therefore, the model is compelled to reduce notable
+deviations from the desired values. By reducing MSE, the
+model can make predictions as close to actual results as
+possible [37].
+During the training and assessment phases of the model,
+accuracy was used as the primary evaluation criterion. Even
+though accuracy is generally used in classification issues,
+in this instance, it was used to measure how often the model
+predictions fell below a specified threshold value. The figure
+illustrates how well the model predicts the future as well as
+validates the data derived from the MSE loss. Using Adam as
+the loss function, MSE as the evaluation metric, and accuracy
+as the evaluation metric, a robust and trusted training process
+aims at maximizing model convergence, and accuracy can be
+achieved.
+Hyperparameters:
+Learning Rate: 0.001, A small learning rate ensures
+that the model updates its weights gradually, preventing
+overshooting the optimal point. Given the complexity of
+the architecture, this low rate allows for stable convergence.
+It helps in fine-tuning the model’s weights effectively during
+training, especially with deep neural networks.
+Batch Size: tested on 16 and 32, the model will process
+16 samples at a time before changing the weights if the
+batch size is set to 16. This size strikes a balance between
+training stability and memory limitations. More frequent
+weight updates are provided by smaller batch sizes, such as
+16, which occasionally aid in enhancing generalization.
+Steps per Epoch: train_generator.samples 16, the number
+of batches that the model should process in one epoch. It is
+calculated as the total number of samples in the training
+dataset divided by the batch size.
+V alidation Steps: validation_generator.samples 32, defines
+how many batches to process in the validation set during
+each epoch. This is calculated similarly to steps per epoch,
+ensuring proper validation of the model’s performance.
+Optimizer: Adam(learning_rate=0.0001) Adam optimizer
+is chosen for its adaptive learning rates, making it suitable
+for deep models with complex datasets. The learning
+rate of 0.0001 ensures gradual weight updates and stable
+convergence. Adam automatically adjusts the learning rates
+during training, making it efficient for large datasets and deep
+networks.
+Data Augmentation: horizontal_flip=True, zoom_
+range=0.2, horizontal flip and zooming augment the dataset
+by introducing slight transformations, increasing model
+robustness. These augmentations help the model generalize
+better and avoid overfitting to specific image features. They
+198982 VOLUME 13, 2025
+
+===== PAGE 14 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+simulate variations in real-world data, making the model
+more resilient to changes in input data.
+Binary classification: Binary classification is one of the
+most ordinary and often discussed problems in DL. With
+effortless form, the user tries to place an entity into one
+of the two accessible categories. The importance of binary
+classification is that businesses can create predictions based
+on data, thanks to binary classification, which may help
+them make better decisions. It can assist companies in
+determining which consumers are most likely to purchase
+their goods, identifying fraudulent financial transactions, and
+averting industrial equipment failure. Additionally, it helps
+with picture categorization, sentiment analysis, and natural
+language processing.
+In this study, for example, there are actual and phony
+photographs. If an image is provided as input, it should
+determine if it is real or not. It is known as binary
+classification since there are two classifications. Neural
+networks may be used to tackle binary classification problems
+to a large degree [10].
+For creating a model that can be used to forecast
+results, binary classification uses a collection of training
+data. Features (variables) and labels (categories) are both
+present in the data used to train. Based on labeled data, the
+model will then utilize these attributes to find trends and
+provide predictions. The model’s accuracy in predicting the
+appropriate labels for fresh data is next assessed.
+For classification, a threshold is applied to the output
+probability to transform the continuous value into a discrete
+class label. By default, the threshold is set at 0.5, which
+indicates that if predicted probability exceeds 0.5, the input
+classified as being in the ‘‘positive’’ category (in this case,
+‘‘real’’) However, the input will be categorized as ‘‘negative’’
+(sometimes referred to as ‘‘deep fake’’) if the likelihood
+is less than 0.5. In order to calculate the threshold value,
+both classes are assumed to be equally important and the
+dataset to be fairly balanced. However, if class distributions
+are uneven or if there are significant disparities between
+erroneous exclusions and positive factors, this assumption
+may not hold.
+There are two classes or labels in binary classification
+issues. The point at which an item is deemed to be a
+member of the target class is established by the categorization
+threshold. Three or more classes can be found in multi-class
+classification issues. The threshold can be varied to achieve
+more nuanced control over the trade-off between many
+assessment criteria, including accuracy and recall. Recall
+refers to the percentage of ‘‘real’’ occurrences that the model
+correctly detected. The lower the threshold, the more likely it
+is to identify instances as true, resulting in a higher recall[11].
+Assessment employing test_on_batch:The test_on_batch
+method evaluates the model on a single batch of unseen data
+(the test batch) without making predictions on the entire
+dataset To calculate the loss and metrics (like accuracy,
+precision, and recall) for that batch, it makes use of the
+same measurements that were monitored during training This
+method is widely used for incremental model performance
+evaluation or real-time testing with smaller data subsets.
+F orecasts Made With Predict: Using the model’s predict
+technique, the test data is predicted. For each occurrence,
+the model, which ends with a sigmoid activation function,
+most likely generates a probability ranging from 0 to 1. These
+probabilities indicate how likely the model is to believe an
+input belongs to a ‘‘real’’ class (1).’’Real’’ is represented by
+a value near one (1), whereas ‘‘deepfake’’ is represented by a
+number around zero (−0.5).
+Cutting Off at 0.5: A threshold is applied to the
+probabilities to convert them into class labels. The threshold
+in your instance is set at 0.5: If the predicted probability is
+higher than or equal to 0.5, output class projected as 1 (real).
+If the predicted probability is less than 0.5, the output class
+gives 0, which means deepfake, and the threshold of this can
+be adjusted to make recall and precision suit the model’s
+performance.
+Combining Meso4 and Capsule Networks for Deepfake
+Detection Integration and Application
+The deep learning models are creating a huge impact
+on technology. Different methods are evolving from deep
+learning, so that it is becoming easy to solve cases such as
+deep fakes. The researchers are also integrating these methods
+with different neural network designs so that the detection
+will be easy with great accuracy in results. In this research,
+Meso4 and Capsule networks are integrated for real-time
+applications, and this technique aims to detect deep fakes
+more easily with even more accurate results in no time.
+Combined Approach for Deepfake Detection:
+A Capsule network is used to maintain hierarchical rela-
+tionships within the parts of images. This results in detecting
+small differences in the images, which are not the same as
+in the individual features, but can appear in the arrangement
+of facial pieces. Since deepfake content is characterized by a
+variety of changes, one model may not always be adequate
+to identify it. Therefore, combining Meso4 and Capsule
+Networks can offer a variety of advantages [Fig.6].
+The artifact detection capabilities of Meso4 are combined
+with Capsule Networks’ spatial sensitivity, making it possible
+for researchers to create models that are less susceptible to
+deepfake modification techniques. These techniques include
+those used by autoencoders and Generative Adversarial
+Networks. By integrating both spatial inconsistencies with
+pixel-based anomalies, this technique enhances the detection
+system’s generalization capabilities [12].
+IV. RESULTS
+Collecting data and data preprocessing are the crucial steps
+to train the model, which can result in accurate results. These
+steps are already covered in the methodology.
+Training and Evaluation: For deepfake detection models to
+be trained, they need extensive and heterogeneous datasets,
+especially when meshing architectures like Meso4 and Caps
+Nets are used. A training model needs data that consists of
+real images as well as fake images to detect the input images.
+VOLUME 13, 2025 198983
+
+===== PAGE 15 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+TABLE 3. CapsuleNet with feature pyramid and spatial attention
+(FFA-MPDV) parametrization.
+To train this, there is a need for a high-quality model which
+can give accurate results in detecting deepfake images.
+Training process: The meso4 net model and capsule
+network model are trained without combining in this training
+phase, and the smaller datasets are pre-trained on each
+network by fine-tuning all together on a larger dataset. The
+two models’ outputs are combined in the final decision layer
+that classifies data based on the combined knowledge of
+networks.
+Loss Function: The Foundation of both DL and ML is
+the loss function. We can infer from its name that it has
+something to do with differences. This discrepancy represents
+the model’s mistake when comparing the model’s predicted
+value to the dataset’s original value.
+Loss Error = Actual V alue− Predicted V alue (16)
+We may assess or gauge the performance of our model
+using the loss function. A mathematical formula called the
+loss function, often referred to as the cost function, is utilized
+to assess how effectively our program models the dataset.
+It is determined by the algorithm’s settings. The model is
+functioning well if the loss function value is low; if not,
+we must adjust the model’s parameters to minimize or reduce
+the loss. During training, it directs the learning algorithm
+to modify the model’s parameters, such as weights and
+biases [13].
+FIGURE 8. (a) (i) Original Image (ii) X-Ray Image (iii) Thresholded Image
+(iv) Heatmap Image;(b) (i) Original Image (ii) X-Ray Image (iii)
+Thresholded Image (iv) Heatmap Image.
+Metrics of Evaluation: A statistical or ML model’s
+performance and efficacy are evaluated using evaluation
+metrics, which are quantifiable measurements. Metrics such
+as these allow comparisons between different models or
+algorithms, as well as insights into how effectively the model
+performs.
+For testing the generalization capacity of our model, we ran
+it on various DFDC subsets (e.g., DFDC_00 to DFDC_03).
+Good performance across these subsets, regardless of
+198984 VOLUME 13, 2025
+
+===== PAGE 16 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+FIGURE 9. (a) & (b)Distribution of predicted labels.
+TABLE 4. FFA-MPDV classification results by class.
+different video sources and manipulation styles, supports
+excellent generalization. In addition, the incorporation
+of Capsule Networks with MobileNetV2 and ResNet50
+improves the learning of spatial relationships, making the
+model more suitable to adapt to various types of fake images.
+To evaluate the capability of our suggested method for
+generalization, we applied it to various subsets of the
+DFDC dataset and reported consistent performance for
+DFDC_00 to DFDC_03. This indicates that the model is
+neither overfitting on one subset nor is there any flaw in
+the generalization capability. Furthermore, to further ensure
+generalization validity, future research will include testing
+the model on cross-dataset benchmarks like Celeb-DF and
+FaceForensics++, demonstrating robustness against domain
+changes and novel fake generation methods.
+Table 6 shows the comparative analysis of the introduced
+FFA-MPDV model with various existing deepfake detection
+FIGURE 10. (a) Validation confusion matrix, (b) Testing confusion matrix,
+(c) Normalized validation confusion matrix.
+models, such as XceptionNet, MesoNet, SRNet and DAFDN.
+The results show the comparative advantages of the intro-
+duced approach in terms of accuracy, precision, recall and
+F1 score using the same dataset (DFDC) for uniform
+evaluation.
+VOLUME 13, 2025 198985
+
+===== PAGE 17 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+TABLE 5. Performance comparison with existing deepfake detection models.
+TABLE 6. Testing on DFDC dataset.
+Although models such as XceptionNet and DAFDN
+have good performance, they are expensive in terms of
+computation and would not be ideal for real-time or edge-
+based applications. MesoNet, while light, is weak in recall,
+which means it has a lower capacity to pick up subtle
+manipulations.
+The FFA-MPDV model proposed here takes the lightness
+of Meso4Net and the sophisticated spatial perception of
+Capsule Networks and adds spatial attention mechanisms
+and FPN for detecting high-level and detailed features.
+Consequently, FFA-MPDV has the best detection accuracy of
+97.30%, accompanied by well-balanced precision (96.45%)
+and recall (96.00%), proving effective in deepfake detection
+with computational efficiency.
+These findings confirm that the hybrid framework
+designed not only enhances performance but also provides
+realistic benefits for real-time deepfake detection systems.
+A high AUC, also known as an Area Under the ROC
+curve, indicates the ability of the model to categorize
+between classes. An AUC such as ours indicates that it can
+discriminate between positive and negative classes [Fig.11a].
+Precision-Recall Curve: Plotting the accuracy against the
+recall for a single classifier at various thresholds creates the
+precision-recall curve. The curve shows us how the model
+performs when dealing with class imbalance and binary
+classification [Fig.11 b].
+V alidation Precision: precision is the proportion of true
+results predicted correctly out of total predictions. The model
+produces fewer false positive predictions when its accuracy
+score is higher. When it forecasts a favorable result, it has a
+higher chance of being accurate [38].
+A V alidation Recall, also known as sensitivity or True
+Positive Rate, indicates how often the model has correctly
+detected positive instances.
+A confidence interval is a range of values that are likely to
+include the real population parameter and are obtained from
+sample data. An estimate of the sample statistic’s uncertainty
+is given. The degree of ambiguity surrounding the actual
+value increases with the interval’s width.
+FIGURE 11. (a) ROC curve (b) Precision-recall curve.
+A statistical metric called the p-value is used to assess how
+strong the evidence is against the null hypothesis. Stronger
+evidence against the null hypothesis, which suggests that
+the observed outcomes are unlikely to have happened by
+accident, is indicated by a smaller p-value. A p-value is
+usually regarded as statistically significant if it is less than
+0.05.
+V alidation True Negatives: The cases that were accurately
+predicted to be negative (i.e., correctly classified as belonging
+to the negative class by the model) are known as True
+Negatives. It keeps track of how many times the condition’s
+absence was accurately predicted by the model. V alidation
+True Positive: Vice V ersa of true negative, classified as
+positive. V alidation Accuracy: The percentage of correctly
+categorized occurrences in the validation set is known as
+198986 VOLUME 13, 2025
+
+===== PAGE 18 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+TABLE 7. Performance comparison with existing deepfake detection models.
+FIGURE 12. (a) Boxplot of loss values, (b) Learning rate over epochs.
+TABLE 8. Confidence Interval and P-Value.
+validation accuracy. It gauges how well a model can forecast
+the right result based on the input. V alidation Loss: Model’s
+ability to generalize on the validation set is gauged by the
+validation loss. It stands for the inaccuracy in data that is
+not visible. A growing validation loss implies the model’s
+performance on validation is diminishing; consequently, it is
+less effective at relating new data to the old. The confusion
+matrix is used to visualize a classification task’s results by
+displaying the various predictions. The results are displayed
+as a table with the actual and projected values of the classifier.
+TABLE 9. Ablation study results on FFA-MPDV model.
+The distribution of predicted label graphs shows us how
+the predicted labels ( or categories) of a model’s output are
+distributed across different classes. The distribution helps
+us understand the model’s performance by visualizing the
+frequency or proportion of each predicted class.
+By utilizing the spatially aware Capsule Networks and the
+lightweight Meso4Net, the FFA-MPDV model is designed
+for real-time deepfake detection, ensuring both speed and
+precision in classification. It is quite effective even on com-
+pressed or low-resolution data because of its integration with
+Feature Pyramid Networks (FPN), which enables multi-scale
+feature extraction. This model effectively identifies forgeries
+on edge devices and cloud-based systems, in contrast to
+computationally costly Vision Transformers that require
+significant computing power. By focusing attention on
+key areas, the spatial attention mechanism reduces false
+positives and improves detection accuracy. It can be used
+for forensic investigations, video authentication, and social
+media surveillance because of its fast inference time. It is a
+powerful tool against false information since it can identify
+minute facial changes in real time. Because of its versatility,
+the model may be used with a wide range of picture and video
+formats, increasing its usefulness in real-world applications.
+A. ABLATION STUDY
+To better understand how each part of the FFA-MPDV model
+contributes to its performance, we carried out an ablation
+study on Table 9. In this process, we tested the model by
+removing key components such as the Capsule Network,
+Feature Pyramid Network (FPN), and Spatial Attention one at
+a time. This allowed us to see how much each element affects
+the overall accuracy. We also evaluated a simplified version
+of the model using only Meso4Net to serve as a baseline for
+comparison.
+V. ETHICAL CONSIDERATIONS
+Deepfake detection raises several ethical concerns, including
+biases, practical applications, and security implications.
+VOLUME 13, 2025 198987
+
+===== PAGE 19 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+TABLE 10. Final hyperparameter configuration for FFA-MPDV model.
+A bias in the dataset used to train models is a significant
+issue. If the dataset does not have a diverse demographic,
+ethnic, or lighting profile, the model may be unable to
+generalize across populations, resulting in misclassification.
+The consequences of false positives and negatives can be
+severe, especially in cybersecurity, the media, and legal
+proceedings. To avoid reinforcing preexisting prejudices in
+AI systems, dataset curation and model training should be
+equitable and inclusive. As part of ethical AI principles,
+detection technologies must also be deployed to prevent
+abuse, including unfair monitoring and false allegations based
+on algorithmic errors.
+Detecting deepfakes is crucial to preventing political
+manipulation, false information, and privacy invasions in
+real-world applications. However, security concerns arise as
+deepfake-generating methods become more sophisticated,
+resulting in a race between detection systems and forgery
+makers. Also, deepfake detection can be used to verify
+authenticity in digital forensics and journalism. However,
+malicious actors can exploit these models for framing people
+by misclassifying authentic information as fake – a practice
+known as the ‘‘liar’s dividend.’’ Governments, technology
+companies, and researchers must work together to develop
+uniform rules and transparency standards for AI-driven
+verification tools. The ethical deployment of detection
+models should also account for user consent in order to ensure
+no violations of privacy rights are committed.
+VI. CONCLUSION
+In conclusion, by fusing the advantages of both architec-
+tures, Meso4Net and Capsule Networks provide a potent
+deepfake detection solution.Meso4Net offers a lightweight
+but powerful framework for recognizing the general structure
+and fundamental characteristics of facial images, and it
+is well known for its ability to handle low-resolution
+input. When enhanced with Capsule Networks, which are
+excellent at mapping spatial hierarchies and identifying
+minute differences, this model becomes more capable of
+analyzing small pattern dissimilarities. The combination of
+these features enhances the model’s ability to detect deepfake
+alterations, allowing it to identify deformities typical of
+deepfake photos.
+By adding spatial attention and an FPN, we enhance the
+model’s sensitivity to high-level and fine-grained features.
+Because of its spatial attention mechanism, the model is
+able to concentrate on certain face features, like lips, eyes,
+and other high-information areas, that are often altered in
+deepfake photos. FPN aids the model in capturing multi-scale
+information, enabling it to detect tiny anomalies otherwise
+undetected and analyze details at different resolutions. It is
+important to note that spatial attention and FPN complement
+each other well in detecting altered images, especially in
+difficult situations in which fakes closely resemble real
+ones [14].
+Future Directions for Model Integration
+The potential benefits and drawbacks of synthetic media
+for our society are drawing a lot of attention. Even though
+there has been remarkable work revealed for both deepfake
+detection and creation, the rivalry between the two will not
+end anytime soon. However, there is still an opportunity
+for development. The present status of deepfakes, their
+drawbacks, and potential developments are covered in this
+section. Using Meso4 and Capsule Networks together is
+simply one method of detecting deep fakes. New meth-
+ods and architectures will keep coming up as the field
+develops.
+Future Research Might Investigate:
+• Effective, dependable, cross-platform, and powerful
+smartphone apps for identifying DeepFake photos and
+videos [39]. The use of platform-agnostic frameworks
+and the design of mobile-specific models will ensure
+access and usability across a variety of platforms. It is
+essential to take mobile devices’ resource limitations
+into account.
+• DeepFake detection pipelines become more feasible
+for real-world applications by utilizing model pruning,
+quantization, and effective training strategies to maxi-
+mize accuracy, time, and cost efficiency.
+The transparency and interpretability of deepfake detection
+could be greatly improved by including XAI approaches
+into the FFA-MPDV model. Users can learn more about
+the model’s decision-making process and which facial traits
+or image regions are most important for categorization
+by using techniques like SHAP or LIME. Particularly for
+delicate applications, including privacy concerns, this would
+contribute to the development of trust and confidence in the
+model’s predictions. Furthermore, by pointing out any biases
+198988 VOLUME 13, 2025
+
+===== PAGE 20 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+or inconsistencies in feature recognition, XAI could help
+diagnose and enhance model performance. In the end, using
+XAI would improve the FFA-MPDV’s use and dependability
+in practical situations.
+Real-time DeepFake detection and increased compute
+efficiency can be achieved by using large data architectures
+or in-memory distributed frameworks. Data management and
+system complexity are obstacles, though. Apache Spark and
+Apache Kafka exemplify a real-time framework for Deep-
+Fake detection. However, the persistence layer and queuing
+mechanism still need to be maintained on a continuous basis.
+The DeepFake detection [40] pipeline may be deployed and
+monitored with ease using SaaS-based services, but they do
+require highly configured cloud instances, and eventually,
+it is not easy to increase cost and portability from one
+system to another. Therefore, for flawless and accurate real-
+time frameworks, edge computing (decentralized computing)
+may affect another study area. Several enhancements can
+be made to the deepfake detection framework in the future
+to identify dynamic discrepancies within deepfake films,
+especially when using video-based authentication. A more
+advanced data augmentation approach may also improve the
+model’s resistance to changes in image quality, illumination,
+and occlusion. Another possibility is to investigate transfer
+learning for certain domains, which would enable the
+model to adapt well to different types of forgeries. Taking
+these issues into account, the model can become a more
+reliable device for spotting deepfakes and maintaining digital
+integrity.
+REFERENCES
+[1] C. Kong, B. Chen, H. Li, S. Wang, A. Rocha, and S. Kwong, ‘‘Detect and
+locate: Exposing face manipulation by semantic- and noise-level telltales,’’
+IEEE Trans. Inf. F orensics Security, vol. 17, pp. 1741–1756, 2022.
+[2] J. Kang, S.-K. Ji, S. Lee, D. Jang, and J.-U. Hou, ‘‘Detection enhancement
+for various deepfake types based on residual noise and manipulation
+traces,’’ IEEE Access, vol. 10, pp. 69031–69040, 2022.
+[3] Y .-X. Luo and J.-L. Chen, ‘‘Dual attention network approaches to face
+forgery video detection,’’IEEE Access, vol. 10, pp. 110754–110760, 2022.
+[4] X. Li, R. Ni, P . Y ang, Z. Fu, and Y . Zhao, ‘‘Artifacts-disentangled
+adversarial learning for deepfake detection,’’ IEEE Trans. Circuits Syst.
+Video Technol., vol. 33, no. 4, pp. 1658–1670, Apr. 2023.
+[5] V .-N. Tran, S.-G. Kwon, S.-H. Lee, H.-S. Le, and K.-R. Kwon,
+‘‘Generalization of forgery detection with meta deepfake detection model,’’
+IEEE Access, vol. 11, pp. 535–546, 2023.
+[6] G. Li, X. Zhao, and Y . Cao, ‘‘Forensic symmetry for DeepFakes,’’ IEEE
+Trans. Inf. F orensics Security, vol. 18, pp. 1095–1110, 2023.
+[7] H. Wang, Z. Liu, and S. Wang, ‘‘Exploiting complementary dynamic
+incoherence for DeepFake video detection,’’ IEEE Trans. Circuits Syst.
+Video Technol., vol. 33, no. 8, pp. 4027–4040, Aug. 2023.
+[8] H. Felouat, H. H. Nguyen, T.-N. Le, J. Y amagishi, and I. Echizen, ‘‘EKYC-
+DF: A large-scale deepfake dataset for developing and evaluating eKYC
+systems,’’ IEEE Access, vol. 12, pp. 30876–30892, 2024.
+[9] Q. Liu, Z. Xue, H. Liu, and J. Liu, ‘‘Enhancing deepfake detection with
+diversified self-blending images and residuals,’’ IEEE Access, vol. 12,
+pp. 46109–46117, 2024.
+[10] M. Karaköse, H. Y etış, and M. Çeçen, ‘‘A new approach for effective
+medical deepfake detection in medical images,’’ IEEE Access, vol. 12,
+pp. 52205–52214, 2024.
+[11] J. Zhou, X. Zhao, Q. Xu, P . Zhang, and Z. Zhou, ‘‘MDCF-Net: Multi-scale
+dual-branch network for compressed face forgery detection,’’IEEE Access,
+vol. 12, pp. 58740–58749, 2024.
+[12] A. Khormali and J.-S. Y uan, ‘‘Self-supervised graph transformer for
+deepfake detection,’’ IEEE Access, vol. 12, pp. 58114–58127, 2024.
+[13] S. Safwat, A. Mahmoud, I. Eldesouky Fattoh, and F. Ali,
+‘‘Hybrid deep learning model based on GAN and RESNET for
+detecting fake faces,’’ IEEE Access, vol. 12, pp. 86391–86402,
+2024.
+[14] X. Zhou, H. Han, S. Shan, and X. Chen, ‘‘Fine-grained open-set deepfake
+detection via unsupervised domain adaptation,’’IEEE Trans. Inf. F orensics
+Security, vol. 19, pp. 7536–7547, 2024.
+[15] C. H. S. Saquín, G. R. Feregrino, and A. G. Hernández, ‘‘Automatic
+attendance registration system using convolutional neural networks for
+facial recognition,’’ Int. J. Comput. Appl., vol. 185, no. 43, pp. 28–35,
+Nov. 2023.
+[16] T. Say, M. Alkan, and A. Kocak, ‘‘Advancing GAN deepfake detection:
+Mixed datasets and comprehensive artifact analysis,’’ Appl. Sci., vol. 15,
+no. 2, p. 923, Jan. 2025.
+[17] X. Liu, R. Wang, W. Liu, L. Zhang, and X. Wang, ‘‘Quality matters:
+Boosting face presentation attack detection with image quality metrics,’’
+IEEE Access, vol. 12, pp. 94654–94672, 2024.
+[18] L. Shi, J. Zhang, Z. Ji, J. Bai, and S. Shan, ‘‘Real face foundation
+representation learning for generalized deepfake detection,’’ Pattern
+Recognit., vol. 161, May 2025, Art. no. 111299.
+[19] N. M. Alnaim, Z. M. Almutairi, M. S. Alsuwat, H. H. Alalawi,
+A. Alshobaili, and F. S. Alenezi, ‘‘DFFMD: A deepfake face mask dataset
+for infectious disease era with deepfake detection algorithms,’’ IEEE
+Access, vol. 11, pp. 16711–16722, 2023.
+[20] Z. Y ang, J. Liang, Y . Xu, X.-Y . Zhang, and R. He, ‘‘Masked relation
+learning for DeepFake detection,’’ IEEE Trans. Inf. F orensics Security,
+vol. 18, pp. 1696–1708, 2023.
+[21] Y . Zhu, Y . Chen, X. Li, R. Zhang, X. Tian, B. Zheng, and Y . Chen,
+‘‘Information-containing adversarial perturbation for combating facial
+manipulation systems,’’ IEEE Trans. Inf. F orensics Security, vol. 18,
+pp. 2046–2059, 2023.
+[22] R. Han, X. Wang, N. Bai, Q. Wang, Z. Liu, and J. Xue, ‘‘FCD-
+Net: Learning to detect multiple types of homologous deepfake face
+images,’’ IEEE Trans. Inf. F orensics Security, vol. 18, pp. 2653–2666,
+2023.
+[23] Y . Y u, R. Ni, Y . Zhao, S. Y ang, F. Xia, N. Jiang, and G. Zhao, ‘‘MSVT:
+Multiple spatiotemporal views transformer for DeepFake video detection,’’
+IEEE Trans. Circuits Syst. Video Technol. , vol. 33, no. 9, pp. 4462–4471,
+Sep. 2023.
+[24] Q. Yin, W. Lu, B. Li, and J. Huang, ‘‘Dynamic difference learning with
+spatio-temporal correlation for deepfake video detection,’’IEEE Trans. Inf.
+F orensics Security, vol. 18, pp. 4046–4058, 2023.
+[25] G. Sanil, K. Prakash, S. Prabhu, V . C. Nayak, and S. Sengupta,
+‘‘2D-3D facial image analysis for identification of facial features
+using machine learning algorithms with hyper-parameter optimization
+for forensics applications,’’ IEEE Access, vol. 11, pp. 82521–82538,
+2023.
+[26] S. Sadiq, T. Aljrees, and S. Ullah, ‘‘Deepfake detection on social
+media: Leveraging deep learning and FastText embeddings for
+identifying machine-generated tweets,’’ IEEE Access, vol. 11,
+pp. 95008–95021, 2023.
+[27] Y . Y u, X. Liu, R. Ni, S. Y ang, Y . Zhao, and A. C. Kot, ‘‘PV ASS-
+MDD: Predictive visual-audio alignment self-supervision for multimodal
+deepfake detection,’’ IEEE Trans. Circuits Syst. Video Technol., vol. 34,
+no. 8, pp. 6926–6936, Aug. 2024.
+[28] C.-C. Chang, H. H. Nguyen, J. Y amagishi, and I. Echizen, ‘‘Cyber vaccine
+for deepfake immunity,’’IEEE Access, vol. 11, pp. 105027–105039, 2023.
+[29] X. Liu, Y . Y u, X. Li, and Y . Zhao, ‘‘MCL: Multimodal contrastive learning
+for deepfake detection,’’IEEE Trans. Circuits Syst. Video Technol., vol. 34,
+no. 4, pp. 2803–2813, Apr. 2024.
+[30] Y . Xie, H. Cheng, Y . Wang, and L. Y e, ‘‘Domain generalization via
+aggregation and separation for audio deepfake detection,’’IEEE Trans. Inf.
+F orensics Security, vol. 19, pp. 344–358, 2024.
+[31] Z. Guo, Z. Jia, L. Wang, D. Wang, G. Y ang, and N. Kasabov, ‘‘Constructing
+new backbone networks via space-frequency interactive convolution
+for deepfake detection,’’ IEEE Trans. Inf. F orensics Security, vol. 19,
+pp. 401–413, 2024.
+[32] Y . Huang, F. Juefei-Xu, Q. Guo, Y . Liu, and G. Pu, ‘‘Dodging
+DeepFake detection via implicit spatial-domain notch filtering,’’ IEEE
+Trans. Circuits Syst. Video Technol., vol. 34, no. 8, pp. 6949–6962,
+Aug. 2024.
+VOLUME 13, 2025 198989
+
+===== PAGE 21 =====
+N. Pasupuleti, D. V. Lakshmi: Deepfake Detection Using Meso4Net and Capsule Networks
+[33] Y . Patel, S. Tanwar, R. Gupta, P . Bhattacharya, I. E. Davidson, R.
+Nyameko, S. Aluvala, and V . Vimal, ‘‘Deepfake generation and detection:
+Case study and challenges,’’ IEEE Access, vol. 11, pp. 143296–143323,
+2023.
+[34] S. A. Khan and D.-T. Dang-Nguyen, ‘‘Deepfake detection:
+Analyzing model generalization across architectures, datasets, and
+pre-training paradigms,’’ IEEE Access, vol. 12, pp. 1880–1908,
+2024.
+[35] J. Park, L. H. Park, H. E. Ahn, and T. Kwon, ‘‘Coexistence of deepfake
+defenses: Addressing the poisoning challenge,’’ IEEE Access, vol. 12,
+pp. 11674–11687, 2024.
+[36] R. Xia, D. Liu, J. Li, L. Y uan, N. Wang, and X. Gao, ‘‘MMNet:
+Multi-collaboration and multi-supervision network for sequential deepfake
+detection,’’ IEEE Trans. Inf. F orensics Security, vol. 19, pp. 3409–3422,
+2024.
+[37] L. Chen, H. Zhao, J. He, and W. Meng, ‘‘GLFAFormer: DeepFake forgery
+detection with adaptive feature extract and align,’’ Digit. Signal Process.,
+vol. 165, Oct. 2025, Art. no. 105321.
+[38] S. Dasgupta, K. Badal, S. Chittam, M. Tasnim Alam, and K. Roy,
+‘‘Attention-enhanced CNN for high-performance deepfake detection:
+A multi-dataset study,’’ IEEE Access, vol. 13, pp. 101980–101993,
+2025.
+[39] H. Alsolai, K. Mahmood, A. Alshuhail, A. B. Miled, M. Alqahtani,
+A. Alshareef, F. S. Alallah, and B. M. Alghamdi, ‘‘Guardian-AI: A novel
+deep learning based deepfake detection model in images,’’Alexandria Eng.
+J., vol. 126, pp. 507–514, Jul. 2025.
+[40] M. Long, Z. Liu, L.-B. Zhang, and F. Peng, ‘‘LGDF-Net: Local and
+global feature-based dual-branch fusion networks for deepfake detection,’’
+IEEE Trans. Circuits Syst. Video Technol. , vol. 35, no. 6, pp. 5489–5500,
+Jun. 2025.
+NAGALAKSHMI PASUPULETI received the
+M.Tech. degree from JNTUK. She is currently a
+full-time Ph.D. Research Scholar with the School
+of Computer Science and Engineering, VIT-
+AP University, Amaravati. Her research interests
+include deep learning and image processing.
+D. VENKATA LAKSHMI received the M.Sc.,
+M.Phil., and Ph.D. degrees in mathematics from
+the Central University of Hyderabad, Hyderabad,
+Telangana, the M.Tech. degree in CSE from
+Acharya Nagarjuna University, Andhra Pradesh,
+and the Ph.D. degree in CSE from V ellore
+Institute of Technology University, Chennai. She
+has 29 years of teaching experience and more than
+ten years of research experience. Currently, she is
+a Professor with the School of Computer Science
+and Engineering, VIT-AP University, Andhra Pradesh. She has published
+more than 60 research articles in reputed national/international journals
+indexed in Scopus/WOS/SCI/UGC. Her research interests include machine
+learning, deep learning, natural language processing, graph theory, and
+artificial intelligence.
+198990 VOLUME 13, 2025

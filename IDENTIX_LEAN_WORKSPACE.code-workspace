@@ -1,0 +1,30 @@
+{
+  "folders": [
+    {
+      "path": "IDENTIX_V2_RELEASE"
+    }
+  ],
+  "settings": {
+    "git.autofetch": false,
+    "git.autorefresh": false,
+    "git.autoRepositoryDetection": "openEditors",
+    "git.openRepositoryInParentFolders": "never",
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.analysis.indexing": false,
+    "files.watcherExclude": {
+      "**/.git/**": true,
+      "**/__pycache__/**": true,
+      "**/*.pth": true,
+      "**/models/**": true,
+      "**/checkpoints/**": true,
+      "**/outputs/**": true
+    },
+    "search.exclude": {
+      "**/.git/**": true,
+      "**/*.pth": true,
+      "**/models/**": true,
+      "**/checkpoints/**": true,
+      "**/outputs/**": true
+    }
+  }
+}

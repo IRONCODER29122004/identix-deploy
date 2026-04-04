@@ -1,0 +1,35 @@
+## Core Dependencies
+torch==2.0.0
+torchvision==0.15.0
+opencv-python==4.7.0.72
+numpy==1.24.0
+pillow==9.5.0
+
+## Vision Models
+timm==0.9.12
+
+## ML Models & Detection
+efficientnet_pytorch==0.7.1
+opencv-contrib-python==4.7.0.72
+scikit-image==0.20.0
+
+## Flask & Web
+flask==2.3.0
+flask-cors==4.0.0
+
+## Model Management & Download
+gdown==4.7.1
+huggingface-hub==0.14.1
+
+## Utilities
+scipy==1.10.0
+scikit-learn==1.2.0
+
+## Optional: GPU Support
+# Uncomment if you have NVIDIA GPU
+# torch-cuda-toolkit==11.8
+
+## Optional: For production deployment
+# gunicorn==20.1.0
+# python-dotenv==1.0.0
+# redis==4.5.0

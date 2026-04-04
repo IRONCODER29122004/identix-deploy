@@ -1,0 +1,265 @@
+{
+  "best": {
+    "deepfake_threshold": 0.66,
+    "authentic_threshold": 0.32,
+    "sampled_frames": 24,
+    "fitness": 2.0,
+    "OK": 1,
+    "FP": 1,
+    "FN": 0,
+    "uncertain": 1,
+    "error": 0,
+    "details": [
+      {
+        "video": "speaking_person.mp4",
+        "truth": "real",
+        "verdict": "LOW CONFIDENCE - NEEDS MANUAL REVIEW",
+        "confidence": 6.058647001930574,
+        "outcome": "uncertain",
+        "error": null
+      },
+      {
+        "video": "test_person_video.mp4",
+        "truth": "real",
+        "verdict": "LIKELY DEEPFAKE",
+        "confidence": 38.52167110120819,
+        "outcome": "FP",
+        "error": null
+      },
+      {
+        "video": "output_deepfake.mp4",
+        "truth": "fake",
+        "verdict": "LIKELY DEEPFAKE",
+        "confidence": 33.49405000586082,
+        "outcome": "OK",
+        "error": null
+      }
+    ]
+  },
+  "top5": [
+    {
+      "deepfake_threshold": 0.66,
+      "authentic_threshold": 0.32,
+      "sampled_frames": 24,
+      "fitness": 2.0,
+      "OK": 1,
+      "FP": 1,
+      "FN": 0,
+      "uncertain": 1,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LOW CONFIDENCE - NEEDS MANUAL REVIEW",
+          "confidence": 6.058647001930574,
+          "outcome": "uncertain",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 38.52167110120819,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 33.49405000586082,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    },
+    {
+      "deepfake_threshold": 0.68,
+      "authentic_threshold": 0.34,
+      "sampled_frames": 24,
+      "fitness": 2.0,
+      "OK": 1,
+      "FP": 1,
+      "FN": 0,
+      "uncertain": 1,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LOW CONFIDENCE - NEEDS MANUAL REVIEW",
+          "confidence": 12.999823472518816,
+          "outcome": "uncertain",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 42.887325001121674,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 49.44939887866887,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    },
+    {
+      "deepfake_threshold": 0.64,
+      "authentic_threshold": 0.3,
+      "sampled_frames": 24,
+      "fitness": -2.0,
+      "OK": 1,
+      "FP": 2,
+      "FN": 0,
+      "uncertain": 0,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 1.0,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 49.3092112922418,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 23.353039369927473,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    }
+  ],
+  "all": [
+    {
+      "deepfake_threshold": 0.66,
+      "authentic_threshold": 0.32,
+      "sampled_frames": 24,
+      "fitness": 2.0,
+      "OK": 1,
+      "FP": 1,
+      "FN": 0,
+      "uncertain": 1,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LOW CONFIDENCE - NEEDS MANUAL REVIEW",
+          "confidence": 6.058647001930574,
+          "outcome": "uncertain",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 38.52167110120819,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 33.49405000586082,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    },
+    {
+      "deepfake_threshold": 0.68,
+      "authentic_threshold": 0.34,
+      "sampled_frames": 24,
+      "fitness": 2.0,
+      "OK": 1,
+      "FP": 1,
+      "FN": 0,
+      "uncertain": 1,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LOW CONFIDENCE - NEEDS MANUAL REVIEW",
+          "confidence": 12.999823472518816,
+          "outcome": "uncertain",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 42.887325001121674,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 49.44939887866887,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    },
+    {
+      "deepfake_threshold": 0.64,
+      "authentic_threshold": 0.3,
+      "sampled_frames": 24,
+      "fitness": -2.0,
+      "OK": 1,
+      "FP": 2,
+      "FN": 0,
+      "uncertain": 0,
+      "error": 0,
+      "details": [
+        {
+          "video": "speaking_person.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 1.0,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "test_person_video.mp4",
+          "truth": "real",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 49.3092112922418,
+          "outcome": "FP",
+          "error": null
+        },
+        {
+          "video": "output_deepfake.mp4",
+          "truth": "fake",
+          "verdict": "LIKELY DEEPFAKE",
+          "confidence": 23.353039369927473,
+          "outcome": "OK",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

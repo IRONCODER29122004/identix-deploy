@@ -1,0 +1,2 @@
+timestamp_utc,tag,input_type,input_path,model_path,device,threshold,max_frames,sampled_frames,label,score,proba_fake,confidence,mean_p,q75,q25,logit,logit_std,tta_views
+2026-03-26T04:56:43.840117+00:00,perf_check_speaking,video,D:\link2\Capstone 4-1\Code_try_1\Required\faceswap_samples\speaking_person.mp4,D:\link2\Capstone 4-1\Code_try_1\Required\models\ffa_mpdv_v9_kaggle_paper_baseline.pth,cpu,0.66,16,16,REAL,0.538452061939663,,0.07690412387932599,0.533690788937548,0.641169614922521,0.3663458669887524,,,

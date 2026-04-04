@@ -1,0 +1,93 @@
+# ==========================================
+# IDENTIX Git Ignore Configuration
+# Excludes temporary files, uploads, and sensitive data
+# ==========================================
+
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# User uploaded data (regenerated at runtime)
+Required/data/uploads/*
+Required/data/pipelines_frames/*
+Required/data/pipelines_crops/*
+Required/data/pipeline_status.json
+
+# Keep directory structure
+!Required/data/uploads/.gitkeep
+!Required/data/pipelines_frames/.gitkeep
+!Required/data/pipelines_crops/.gitkeep
+
+# Large video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Operating system files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# MyPy type checker
+.mypy_cache/
+.dmypy.json
+dmyp.json
+
+# Database files (if using SQLite locally)
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+tmp_seg_result.json
+outputs/validation_curves.png

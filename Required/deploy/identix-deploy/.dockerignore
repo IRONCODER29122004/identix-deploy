@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+docs/
+
+# Test files
+test/
+tests/
+*.test.py
+
+# Data
+data/uploads/*
+data/pipelines_*/*
+# BUT keep .gitkeep files
+
+# Large files (LFS will handle)
+# best_model.pth is tracked by LFS, don't exclude
+
+# Render specific
+render.yaml

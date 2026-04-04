@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live FaceSwap - IDENTIX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .warning-banner {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .video-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .video-container {
+            position: relative;
+            background: black;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #webcam {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+        }
+
+        #outputCanvas {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .face-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .face-option {
+            border: 3px solid transparent;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .face-option:hover {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .face-option.selected {
+            border-color: #667eea;
+            background: #e7f0ff;
+        }
+
+        .face-option img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .face-option p {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .setting-item {
+            margin-bottom: 15px;
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .setting-item select,
+        .setting-item input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #eee;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #eee;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status-dot.active {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .watermark-preview {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        /* Global background */
+        body {
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(102, 126, 234, 0.10), transparent 40%),
+                radial-gradient(circle at 85% 0%, rgba(250, 112, 154, 0.08), transparent 42%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.98));
+            background-attachment: fixed;
+        }
+
+        [data-theme="dark"] body {
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(124, 142, 239, 0.18), transparent 42%),
+                radial-gradient(circle at 85% 0%, rgba(250, 112, 154, 0.12), transparent 45%),
+                linear-gradient(180deg, rgba(10, 12, 18, 0.98), rgba(12, 16, 22, 0.98));
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Live FaceSwap Generator</h1>
+            <p>Real-Time Deepfake Generation - IDENTIX Project</p>
+        </header>
+
+        <div class="warning-banner">
+            ⚠️ <strong>EDUCATIONAL USE ONLY</strong> - All generated content is watermarked as SYNTHETIC MEDIA
+        </div>
+
+        <div class="main-content">
+            <!-- Video Section -->
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="outputCanvas"></canvas>
+                    <div class="watermark-preview" id="watermark" style="display: none;">
+                        ⚠️ SYNTHETIC MEDIA
+                    </div>
+                </div>
+
+                <div class="video-controls">
+                    <button class="btn btn-primary" id="startBtn" onclick="startWebcam()">
+                        📹 Start Webcam
+                    </button>
+                    <button class="btn btn-primary" id="swapBtn" onclick="startSwap()" style="display: none;">
+                        🎭 Start Face Swap
+                    </button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopSwap()" style="display: none;">
+                        ⏹ Stop Face Swap
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetAll()">
+                        🔄 Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Status -->
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Inactive</span>
+                </div>
+
+                <!-- Target Face Selection -->
+                <div class="section">
+                    <h3>Select Target Face</h3>
+                    <div class="face-gallery">
+                        <div class="face-option selected" data-face="celebrity1" onclick="selectFace(this, 'celebrity1')">
+                            <img src="/static/assets/sample1.jpg" alt="Sample 1">
+                            <p>Sample 1</p>
+                        </div>
+                        <div class="face-option" data-face="celebrity2" onclick="selectFace(this, 'celebrity2')">
+                            <img src="/static/assets/sample2.jpg" alt="Sample 2">
+                            <p>Sample 2</p>
+                        </div>
+                        <div class="face-option" data-face="custom" onclick="uploadCustom()">
+                            <div style="height: 100px; display: flex; align-items: center; justify-center; background: #f0f0f0; border-radius: 8px;">
+                                <span style="font-size: 40px;">+</span>
+                            </div>
+                            <p>Upload Custom</p>
+                        </div>
+                    </div>
+                    <input type="file" id="customUpload" accept="image/*" style="display: none;" onchange="handleCustomUpload(event)">
+                </div>
+
+                <!-- Settings -->
+                <div class="section">
+                    <h3>Settings</h3>
+                    
+                    <div class="setting-item">
+                        <label>Processing Speed</label>
+                        <select id="processingSpeed">
+                            <option value="fast">Fast (20 fps)</option>
+                            <option value="balanced" selected>Balanced (15 fps)</option>
+                            <option value="quality">Quality (10 fps)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Blend Strength: <span id="blendValue">80</span>%</label>
+                        <input type="range" id="blendStrength" min="0" max="100" value="80" oninput="updateBlend(this.value)">
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="section">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="fpsDisplay">--</div>
+                            <div class="stat-label">FPS</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="timeDisplay">--</div>
+                            <div class="stat-label">Processing (ms)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="framesDisplay">0</div>
+                            <div class="stat-label">Frames</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="faceDisplay">No</div>
+                            <div class="stat-label">Face Detected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let webcamStream = null;
+        let isSwapping = false;
+        let selectedTargetFace = 'celebrity1';
+        let processingInterval = null;
+        let frameCount = 0;
+
+        async function startWebcam() {
+            try {
+                webcamStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 1280, height: 720 }
+                });
+
+                const video = document.getElementById('webcam');
+                video.srcObject = webcamStream;
+
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('swapBtn').style.display = 'inline-block';
+
+                updateStatus('Webcam Active', false);
+
+            } catch (error) {
+                alert('Error accessing webcam: ' + error.message);
+            }
+        }
+
+        function startSwap() {
+            isSwapping = true;
+
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('outputCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            document.getElementById('watermark').style.display = 'block';
+
+            document.getElementById('swapBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+
+            updateStatus('Face Swap Active', true);
+
+            processFrame(video, canvas, ctx);
+        }
+
+        function processFrame(video, canvas, ctx) {
+            if (!isSwapping) return;
+
+            const startTime = performance.now();
+
+            // Draw video frame
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Get frame as base64
+            const frameData = canvas.toDataURL('image/jpeg', 0.8);
+
+            // Send to backend for processing
+            fetch('/api/faceswap/frame', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    frame: frameData,
+                    target_face: selectedTargetFace
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.frame) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = data.frame;
+
+                    // Update stats
+                    frameCount++;
+                    const processingTime = performance.now() - startTime;
+                    const fps = 1000 / processingTime;
+
+                    document.getElementById('fpsDisplay').textContent = fps.toFixed(1);
+                    document.getElementById('timeDisplay').textContent = data.processing_time.toFixed(0);
+                    document.getElementById('framesDisplay').textContent = frameCount;
+                    document.getElementById('faceDisplay').textContent = data.face_detected ? 'Yes' : 'No';
+                }
+            })
+            .catch(error => {
+                console.error('Frame processing error:', error);
+            });
+
+            // Continue processing
+            setTimeout(() => processFrame(video, canvas, ctx), 66); // ~15 fps
+        }
+
+        function stopSwap() {
+            isSwapping = false;
+
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('outputCanvas');
+
+            video.style.display = 'block';
+            canvas.style.display = 'none';
+            document.getElementById('watermark').style.display = 'none';
+
+            document.getElementById('swapBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+
+            updateStatus('Webcam Active', false);
+        }
+
+        function resetAll() {
+            stopSwap();
+
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+
+            document.getElementById('webcam').style.display = 'block';
+            document.getElementById('outputCanvas').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('swapBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'none';
+
+            updateStatus('Inactive', false);
+            frameCount = 0;
+        }
+
+        function selectFace(element, faceId) {
+            document.querySelectorAll('.face-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTargetFace = faceId;
+        }
+
+        function uploadCustom() {
+            document.getElementById('customUpload').click();
+        }
+
+        function handleCustomUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/api/faceswap/upload-target', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.face_id) {
+                    selectedTargetFace = data.face_id;
+                    alert('Custom face uploaded successfully!');
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Upload failed: ' + error.message);
+            });
+        }
+
+        function updateBlend(value) {
+            document.getElementById('blendValue').textContent = value;
+        }
+
+        function updateStatus(text, active) {
+            document.getElementById('statusText').textContent = text;
+            const dot = document.getElementById('statusDot');
+
+            if (active) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

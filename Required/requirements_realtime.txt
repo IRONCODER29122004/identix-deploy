@@ -1,0 +1,40 @@
+# Core dependencies for IDENTIX Real-Time Deepfake Detection
+# These extend the existing requirements.txt
+
+# Computer Vision
+opencv-python>=4.8.0
+opencv-contrib-python>=4.8.0
+
+# Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Image Processing
+scikit-image>=0.21.0
+Pillow>=10.0.0
+
+# Face Detection (choose one or both)
+facenet-pytorch>=2.5.0  # MTCNN (more accurate)
+# dlib>=19.24.0  # Alternative face detector
+
+# Web Interface
+gradio>=4.0.0
+
+# Utilities
+numpy>=1.24.0
+scipy>=1.11.0
+tqdm>=4.66.0
+
+# Optional: GPU acceleration
+# Install CUDA toolkit separately, then:
+# torch (with CUDA support)
+
+# Optional: Audio alerts (Windows)
+# pyaudio>=0.2.13  # For more advanced audio
+# playsound>=1.3.0  # Simple audio playback
+
+# Note: These are IN ADDITION to your existing requirements:
+# Flask>=2.3.3
+# pymongo>=4.5.0
+# Werkzeug>=2.3.7
+# etc.
